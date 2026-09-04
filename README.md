@@ -503,7 +503,17 @@ Every enum in the schema is re-exported from the package root, so you never hand
 drifts:
 
 ```ts
-import { OrderStatusEnum, CurrencyEnum } from "@paycadoo/client";
+import { OrderStatusEnum, CurrencyEnum, OrderBy } from "@paycadoo/client";
+
+if (order.status === OrderStatusEnum.PAID) { /* … */ }
+```
+
+They are `as const` objects, not TypeScript `enum`s, and each name is both a value and a type. So a
+plain string literal type-checks wherever one is expected — sorting a list does not force an import:
+
+```ts
+await paycadoo.products.list({ orderBy: [{ name: "ASC" }] });        // fine
+await paycadoo.products.list({ orderBy: [{ name: OrderBy.ASC }] });  // also fine
 ```
 
 ## Development

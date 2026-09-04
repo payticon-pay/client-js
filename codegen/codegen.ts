@@ -44,7 +44,10 @@ const config: CodegenConfig = {
   generates: {
     "src/generated/enums.ts": {
       plugins: ["typescript"],
-      config: { onlyEnums: true, namingConvention: "keep" },
+      // `as const` objects rather than TS enums: `OrderBy.ASC` still works as a
+      // value, and a plain `"ASC"` type-checks too — so a consumer sorting a
+      // list does not have to import an enum to say so.
+      config: { onlyEnums: true, namingConvention: "keep", enumsAsConst: true },
     },
     "src/generated/graphql.ts": {
       plugins: [
@@ -56,6 +59,7 @@ const config: CodegenConfig = {
         onlyOperationTypes: true,
         documentMode: "string",
         namingConvention: "keep",
+        enumsAsConst: true,
         enumValues: "./enums.js",
         scalars,
         typedDocumentStringImport: "../graphql/TypedDocumentString.js",
