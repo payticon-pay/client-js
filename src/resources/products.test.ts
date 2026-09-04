@@ -70,3 +70,19 @@ describe("products", () => {
     });
   });
 });
+
+describe("ProductFilter", () => {
+  it("should accept a caller filter without the caller reaching for generated types", async () => {
+    const spy = createExecutorSpy(() => ({ product: [] }));
+
+    // The regression this pins: `where` was derived through a conditional type
+    // over the generated variables, and codegen types a list variable as
+    // `Array<T> | T` — so the conditional collapsed to `undefined` and every
+    // caller filter was a type error.
+    await createProductsResource(spy.execute).list({ where: { id: { _eq: "p1" } } });
+
+    expect(spy.callTo("ListProducts")[0]?.variables).toMatchObject({
+      and: [{ id: { _eq: "p1" } }],
+    });
+  });
+});

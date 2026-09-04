@@ -3,6 +3,7 @@ import {
   GetProductDocument,
   ListProductsDocument,
   type ListProductsQueryVariables,
+  type ProductBoolExp,
   type ProductFieldsFragment,
 } from "../generated/graphql.js";
 import { paginate } from "../pagination.js";
@@ -17,7 +18,7 @@ export interface ProductFilter {
   /** Include soft-deleted products. Off by default. */
   includeDeleted?: boolean;
   /** Extra Hasura filter, applied last. */
-  where?: ListProductsQueryVariables["and"] extends Array<infer T> ? T : never;
+  where?: ProductBoolExp;
   orderBy?: ListProductsQueryVariables["orderBy"];
 }
 
