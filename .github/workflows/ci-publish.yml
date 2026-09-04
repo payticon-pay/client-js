@@ -16,8 +16,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: npm
-      - run: npm ci
+
+      # `cache: npm` on setup-node only caches the tarballs; `npm ci` then still
+      # spends minutes linking 396 packages, almost all of them the codegen
+      # toolchain. Caching the installed tree instead takes the step from ~6
+      # minutes to seconds. The key carries the runner, the Node major and the
+      # lockfile, so a stale tree can never be reused.
+      - uses: actions/cache@v4
+        id: modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node22-modules-${{ hashFiles('package-lock.json') }}
+      - if: steps.modules.outputs.cache-hit != 'true'
+        run: npm ci
 
       # Committed generated code that quietly describes an older schema is
       # worse than none, because the types still look authoritative.
@@ -56,6 +67,7 @@ jobs:
           node-version: "24" # bundles npm >= 11.5.1, which OIDC publishing needs
           registry-url: https://registry.npmjs.org/
       - run: npm --version
+      # Deliberately uncached, per npm's own guidance for release builds.
       - run: npm ci
       - run: npm run build
       # No --provenance: trusted publishing attaches it on its own.
