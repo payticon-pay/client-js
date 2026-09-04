@@ -1,0 +1,68 @@
+query GetOrder($id: uuid!) {
+  orderByPk(id: $id) {
+    ...OrderDetail
+  }
+}
+
+query ListOrders(
+  $where: OrderBoolExp
+  $limit: Int
+  $offset: Int
+  $orderBy: [OrderOrderBy!]
+) {
+  order(where: $where, limit: $limit, offset: $offset, orderBy: $orderBy) {
+    ...OrderFields
+  }
+}
+
+query FindOrderByMerchantId($merchantId: String!) {
+  order(where: { merchantId: { _eq: $merchantId } }, limit: 1) {
+    ...OrderDetail
+  }
+}
+
+# `_in` rather than `_eq` on the id branch on purpose: an identifier that is not
+# a UUID is passed as an empty list, which matches nothing. `_eq: null` would be
+# dropped by Hasura and turn that branch into "match everything".
+query FindOrderByIdOrMerchantId($ids: [uuid!]!, $merchantId: String!) {
+  order(
+    where: { _or: [{ id: { _in: $ids } }, { merchantId: { _eq: $merchantId } }] }
+    limit: 1
+  ) {
+    ...OrderDetail
+  }
+}
+
+query GetOrderPaywallUrl($orderId: uuid!, $paywall: PaywallOptions) {
+  generateOrderPaywallUrl(orderId: $orderId, paywall: $paywall) {
+    url
+  }
+}
+
+mutation CreateOrder($input: CreateOrderInput!) {
+  createOrder(input: $input) {
+    orderId
+    paywallUrl
+  }
+}
+
+mutation CancelOrder($id: uuid!) {
+  cancelOrder(id: $id) {
+    void
+  }
+}
+
+mutation RefundOrder($input: RefundOrderInput!) {
+  refundOrder(input: $input) {
+    refundId
+    refund {
+      ...RefundFields
+    }
+  }
+}
+
+mutation ResendOrderWebhook($orderId: uuid!) {
+  resendOrderWebhook(orderId: $orderId) {
+    orderId
+  }
+}

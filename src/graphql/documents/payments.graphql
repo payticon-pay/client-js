@@ -1,0 +1,68 @@
+query GetPayment($id: uuid!) {
+  paymentByPk(id: $id) {
+    ...PaymentWithRefunds
+  }
+}
+
+query ListPayments(
+  $where: PaymentBoolExp
+  $limit: Int
+  $offset: Int
+  $orderBy: [PaymentOrderBy!]
+) {
+  payment(where: $where, limit: $limit, offset: $offset, orderBy: $orderBy) {
+    ...PaymentFields
+  }
+}
+
+query ListPaymentsByOrder($orderId: uuid!, $limit: Int, $offset: Int) {
+  payment(
+    where: { orderId: { _eq: $orderId } }
+    orderBy: { createdAt: ASC }
+    limit: $limit
+    offset: $offset
+  ) {
+    ...PaymentWithRefunds
+  }
+}
+
+query GetPaymentParameters($input: GetPaymentParametersInput!) {
+  getPaymentParameters(input: $input) {
+    parameters
+  }
+}
+
+mutation CreatePayment($input: CreatePaymentInput!) {
+  createPayment(input: $input) {
+    paymentId
+    redirectUrl
+    redirectIframeAllowed
+    payment {
+      ...PaymentFields
+    }
+  }
+}
+
+mutation CreateManualPayment($input: CreateManualPaymentInput!) {
+  createManualPayment(input: $input) {
+    paymentId
+    payment {
+      ...PaymentFields
+    }
+  }
+}
+
+mutation ForceRefreshPayment($paymentId: uuid!) {
+  forceRefreshPayment(paymentId: $paymentId) {
+    paymentId
+  }
+}
+
+mutation RefundPayment($input: RefundPaymentInput!) {
+  refundPayment(input: $input) {
+    refundId
+    refund {
+      ...RefundFields
+    }
+  }
+}

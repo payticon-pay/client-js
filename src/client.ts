@@ -1,4 +1,7 @@
 import { PaycadooPingDocument } from "./generated/graphql.js";
+import { createOrdersResource, type OrdersResource } from "./resources/orders.js";
+import { createPaymentsResource, type PaymentsResource } from "./resources/payments.js";
+import { createRefundsResource, type RefundsResource } from "./resources/refunds.js";
 import { createExecutor } from "./transport/execute.js";
 import type { TypedDocumentString } from "./graphql/TypedDocumentString.js";
 import type {
@@ -8,6 +11,10 @@ import type {
 } from "./types.js";
 
 export interface PaycadooClient {
+  readonly orders: OrdersResource;
+  readonly payments: PaymentsResource;
+  readonly refunds: RefundsResource;
+
   /**
    * Executes any GraphQL document against Paycadoo.
    *
@@ -43,6 +50,9 @@ export const createPaycadooClient = (
   const execute = createExecutor(options);
 
   return {
+    orders: createOrdersResource(execute),
+    payments: createPaymentsResource(execute),
+    refunds: createRefundsResource(execute),
     raw: execute as PaycadooClient["raw"],
     ping: async (options?: RequestOptions) => {
       await execute(PaycadooPingDocument, undefined, options);

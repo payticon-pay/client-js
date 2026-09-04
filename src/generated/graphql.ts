@@ -6444,14 +6444,1035 @@ export type voucherAggregateBoolExpCount = {
   predicate: IntComparisonExp;
 };
 
+export type CustomerFieldsFragment = { __typename?: 'Customer', id: string, email: string, firstName: string, lastName: string };
+
+export type OrderItemFieldsFragment = { __typename?: 'OrderItem', id: string, name?: string | null, price: number, qty: number, productId?: string | null, details?: unknown | null, createdAt: string };
+
+export type RefundFieldsFragment = { __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string };
+
+export type PaymentFieldsFragment = { __typename?: 'Payment', id: string, orderId: string, status: PaymentStatusEnum, amount: number, currency: string, orderCurrencyAmount: number, refundedAmount?: number | null, paymentMethodId: string, externalId?: string | null, merchantId?: string | null, isManual: boolean, ip?: string | null, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, rejectReason?: string | null, createdAt: string, updatedAt: string };
+
+export type PaymentWithRefundsFragment = { __typename?: 'Payment', id: string, orderId: string, status: PaymentStatusEnum, amount: number, currency: string, orderCurrencyAmount: number, refundedAmount?: number | null, paymentMethodId: string, externalId?: string | null, merchantId?: string | null, isManual: boolean, ip?: string | null, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, rejectReason?: string | null, createdAt: string, updatedAt: string, refunds: Array<{ __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string }> };
+
+export type OrderFieldsFragment = { __typename?: 'Order', id: string, status: OrderStatusEnum, merchantId?: string | null, title?: string | null, price: number, currency: CurrencyEnum, currentPrice?: number | null, paidAmount?: number | null, refundedAmount?: number | null, remainingAmount?: number | null, customerId: string, projectId: string, subscriptionId?: string | null, returnUrl?: string | null, webhookUrl: string, metadata: unknown, ip?: string | null, deadlineDate?: string | null, createdAt: string, updatedAt: string };
+
+export type OrderDetailFragment = { __typename?: 'Order', id: string, status: OrderStatusEnum, merchantId?: string | null, title?: string | null, price: number, currency: CurrencyEnum, currentPrice?: number | null, paidAmount?: number | null, refundedAmount?: number | null, remainingAmount?: number | null, customerId: string, projectId: string, subscriptionId?: string | null, returnUrl?: string | null, webhookUrl: string, metadata: unknown, ip?: string | null, deadlineDate?: string | null, createdAt: string, updatedAt: string, customer?: { __typename?: 'Customer', id: string, email: string, firstName: string, lastName: string } | null, items: Array<{ __typename?: 'OrderItem', id: string, name?: string | null, price: number, qty: number, productId?: string | null, details?: unknown | null, createdAt: string }>, payments: Array<{ __typename?: 'Payment', id: string, orderId: string, status: PaymentStatusEnum, amount: number, currency: string, orderCurrencyAmount: number, refundedAmount?: number | null, paymentMethodId: string, externalId?: string | null, merchantId?: string | null, isManual: boolean, ip?: string | null, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, rejectReason?: string | null, createdAt: string, updatedAt: string, refunds: Array<{ __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string }> }> };
+
+export type GetOrderQueryVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type GetOrderQuery = { __typename?: 'query_root', orderByPk?: { __typename?: 'Order', id: string, status: OrderStatusEnum, merchantId?: string | null, title?: string | null, price: number, currency: CurrencyEnum, currentPrice?: number | null, paidAmount?: number | null, refundedAmount?: number | null, remainingAmount?: number | null, customerId: string, projectId: string, subscriptionId?: string | null, returnUrl?: string | null, webhookUrl: string, metadata: unknown, ip?: string | null, deadlineDate?: string | null, createdAt: string, updatedAt: string, customer?: { __typename?: 'Customer', id: string, email: string, firstName: string, lastName: string } | null, items: Array<{ __typename?: 'OrderItem', id: string, name?: string | null, price: number, qty: number, productId?: string | null, details?: unknown | null, createdAt: string }>, payments: Array<{ __typename?: 'Payment', id: string, orderId: string, status: PaymentStatusEnum, amount: number, currency: string, orderCurrencyAmount: number, refundedAmount?: number | null, paymentMethodId: string, externalId?: string | null, merchantId?: string | null, isManual: boolean, ip?: string | null, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, rejectReason?: string | null, createdAt: string, updatedAt: string, refunds: Array<{ __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string }> }> } | null };
+
+export type ListOrdersQueryVariables = Exact<{
+  where?: InputMaybe<OrderBoolExp>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<OrderOrderBy> | OrderOrderBy>;
+}>;
+
+
+export type ListOrdersQuery = { __typename?: 'query_root', order: Array<{ __typename?: 'Order', id: string, status: OrderStatusEnum, merchantId?: string | null, title?: string | null, price: number, currency: CurrencyEnum, currentPrice?: number | null, paidAmount?: number | null, refundedAmount?: number | null, remainingAmount?: number | null, customerId: string, projectId: string, subscriptionId?: string | null, returnUrl?: string | null, webhookUrl: string, metadata: unknown, ip?: string | null, deadlineDate?: string | null, createdAt: string, updatedAt: string }> };
+
+export type FindOrderByMerchantIdQueryVariables = Exact<{
+  merchantId: Scalars['String']['input'];
+}>;
+
+
+export type FindOrderByMerchantIdQuery = { __typename?: 'query_root', order: Array<{ __typename?: 'Order', id: string, status: OrderStatusEnum, merchantId?: string | null, title?: string | null, price: number, currency: CurrencyEnum, currentPrice?: number | null, paidAmount?: number | null, refundedAmount?: number | null, remainingAmount?: number | null, customerId: string, projectId: string, subscriptionId?: string | null, returnUrl?: string | null, webhookUrl: string, metadata: unknown, ip?: string | null, deadlineDate?: string | null, createdAt: string, updatedAt: string, customer?: { __typename?: 'Customer', id: string, email: string, firstName: string, lastName: string } | null, items: Array<{ __typename?: 'OrderItem', id: string, name?: string | null, price: number, qty: number, productId?: string | null, details?: unknown | null, createdAt: string }>, payments: Array<{ __typename?: 'Payment', id: string, orderId: string, status: PaymentStatusEnum, amount: number, currency: string, orderCurrencyAmount: number, refundedAmount?: number | null, paymentMethodId: string, externalId?: string | null, merchantId?: string | null, isManual: boolean, ip?: string | null, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, rejectReason?: string | null, createdAt: string, updatedAt: string, refunds: Array<{ __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string }> }> }> };
+
+export type FindOrderByIdOrMerchantIdQueryVariables = Exact<{
+  ids: Array<Scalars['uuid']['input']> | Scalars['uuid']['input'];
+  merchantId: Scalars['String']['input'];
+}>;
+
+
+export type FindOrderByIdOrMerchantIdQuery = { __typename?: 'query_root', order: Array<{ __typename?: 'Order', id: string, status: OrderStatusEnum, merchantId?: string | null, title?: string | null, price: number, currency: CurrencyEnum, currentPrice?: number | null, paidAmount?: number | null, refundedAmount?: number | null, remainingAmount?: number | null, customerId: string, projectId: string, subscriptionId?: string | null, returnUrl?: string | null, webhookUrl: string, metadata: unknown, ip?: string | null, deadlineDate?: string | null, createdAt: string, updatedAt: string, customer?: { __typename?: 'Customer', id: string, email: string, firstName: string, lastName: string } | null, items: Array<{ __typename?: 'OrderItem', id: string, name?: string | null, price: number, qty: number, productId?: string | null, details?: unknown | null, createdAt: string }>, payments: Array<{ __typename?: 'Payment', id: string, orderId: string, status: PaymentStatusEnum, amount: number, currency: string, orderCurrencyAmount: number, refundedAmount?: number | null, paymentMethodId: string, externalId?: string | null, merchantId?: string | null, isManual: boolean, ip?: string | null, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, rejectReason?: string | null, createdAt: string, updatedAt: string, refunds: Array<{ __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string }> }> }> };
+
+export type GetOrderPaywallUrlQueryVariables = Exact<{
+  orderId: Scalars['uuid']['input'];
+  paywall?: InputMaybe<PaywallOptions>;
+}>;
+
+
+export type GetOrderPaywallUrlQuery = { __typename?: 'query_root', generateOrderPaywallUrl: { __typename?: 'GenerateOrderPaywallUrlOutput', url: string } };
+
+export type CreateOrderMutationVariables = Exact<{
+  input: CreateOrderInput;
+}>;
+
+
+export type CreateOrderMutation = { __typename?: 'mutation_root', createOrder: { __typename?: 'CreateOrderOutput', orderId: string, paywallUrl: string } };
+
+export type CancelOrderMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type CancelOrderMutation = { __typename?: 'mutation_root', cancelOrder?: { __typename?: 'Void', void?: boolean | null } | null };
+
+export type RefundOrderMutationVariables = Exact<{
+  input: RefundOrderInput;
+}>;
+
+
+export type RefundOrderMutation = { __typename?: 'mutation_root', refundOrder: Array<{ __typename?: 'RefundOrderOutput', refundId: string, refund?: { __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string } | null }> };
+
+export type ResendOrderWebhookMutationVariables = Exact<{
+  orderId: Scalars['uuid']['input'];
+}>;
+
+
+export type ResendOrderWebhookMutation = { __typename?: 'mutation_root', resendOrderWebhook: { __typename?: 'ResendOrderWebhookOutput', orderId: string } };
+
+export type GetPaymentQueryVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type GetPaymentQuery = { __typename?: 'query_root', paymentByPk?: { __typename?: 'Payment', id: string, orderId: string, status: PaymentStatusEnum, amount: number, currency: string, orderCurrencyAmount: number, refundedAmount?: number | null, paymentMethodId: string, externalId?: string | null, merchantId?: string | null, isManual: boolean, ip?: string | null, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, rejectReason?: string | null, createdAt: string, updatedAt: string, refunds: Array<{ __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string }> } | null };
+
+export type ListPaymentsQueryVariables = Exact<{
+  where?: InputMaybe<PaymentBoolExp>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PaymentOrderBy> | PaymentOrderBy>;
+}>;
+
+
+export type ListPaymentsQuery = { __typename?: 'query_root', payment: Array<{ __typename?: 'Payment', id: string, orderId: string, status: PaymentStatusEnum, amount: number, currency: string, orderCurrencyAmount: number, refundedAmount?: number | null, paymentMethodId: string, externalId?: string | null, merchantId?: string | null, isManual: boolean, ip?: string | null, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, rejectReason?: string | null, createdAt: string, updatedAt: string }> };
+
+export type ListPaymentsByOrderQueryVariables = Exact<{
+  orderId: Scalars['uuid']['input'];
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ListPaymentsByOrderQuery = { __typename?: 'query_root', payment: Array<{ __typename?: 'Payment', id: string, orderId: string, status: PaymentStatusEnum, amount: number, currency: string, orderCurrencyAmount: number, refundedAmount?: number | null, paymentMethodId: string, externalId?: string | null, merchantId?: string | null, isManual: boolean, ip?: string | null, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, rejectReason?: string | null, createdAt: string, updatedAt: string, refunds: Array<{ __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string }> }> };
+
+export type GetPaymentParametersQueryVariables = Exact<{
+  input: GetPaymentParametersInput;
+}>;
+
+
+export type GetPaymentParametersQuery = { __typename?: 'query_root', getPaymentParameters: { __typename?: 'GePaymentParametersOutput', parameters: unknown } };
+
+export type CreatePaymentMutationVariables = Exact<{
+  input: CreatePaymentInput;
+}>;
+
+
+export type CreatePaymentMutation = { __typename?: 'mutation_root', createPayment: { __typename?: 'CreatePaymentOutput', paymentId: string, redirectUrl?: string | null, redirectIframeAllowed?: boolean | null, payment?: { __typename?: 'Payment', id: string, orderId: string, status: PaymentStatusEnum, amount: number, currency: string, orderCurrencyAmount: number, refundedAmount?: number | null, paymentMethodId: string, externalId?: string | null, merchantId?: string | null, isManual: boolean, ip?: string | null, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, rejectReason?: string | null, createdAt: string, updatedAt: string } | null } };
+
+export type CreateManualPaymentMutationVariables = Exact<{
+  input: CreateManualPaymentInput;
+}>;
+
+
+export type CreateManualPaymentMutation = { __typename?: 'mutation_root', createManualPayment: { __typename?: 'CreateManualPaymentOutput', paymentId: string, payment?: { __typename?: 'Payment', id: string, orderId: string, status: PaymentStatusEnum, amount: number, currency: string, orderCurrencyAmount: number, refundedAmount?: number | null, paymentMethodId: string, externalId?: string | null, merchantId?: string | null, isManual: boolean, ip?: string | null, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, rejectReason?: string | null, createdAt: string, updatedAt: string } | null } };
+
+export type ForceRefreshPaymentMutationVariables = Exact<{
+  paymentId: Scalars['uuid']['input'];
+}>;
+
+
+export type ForceRefreshPaymentMutation = { __typename?: 'mutation_root', forceRefreshPayment: { __typename?: 'ForceRefreshPaymentOutput', paymentId: string } };
+
+export type RefundPaymentMutationVariables = Exact<{
+  input: RefundPaymentInput;
+}>;
+
+
+export type RefundPaymentMutation = { __typename?: 'mutation_root', refundPayment: { __typename?: 'RefundPaymentOutput', refundId: string, refund?: { __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string } | null } };
+
 export type PaycadooPingQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type PaycadooPingQuery = { __typename: 'query_root' };
 
+export type GetRefundQueryVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
 
+
+export type GetRefundQuery = { __typename?: 'query_root', refundByPk?: { __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string } | null };
+
+export type ListRefundsQueryVariables = Exact<{
+  where?: InputMaybe<RefundBoolExp>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<RefundOrderBy> | RefundOrderBy>;
+}>;
+
+
+export type ListRefundsQuery = { __typename?: 'query_root', refund: Array<{ __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string }> };
+
+export type ListRefundsByPaymentQueryVariables = Exact<{
+  paymentId: Scalars['uuid']['input'];
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ListRefundsByPaymentQuery = { __typename?: 'query_root', refund: Array<{ __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string }> };
+
+export type ForceRefreshRefundMutationVariables = Exact<{
+  refundId: Scalars['uuid']['input'];
+}>;
+
+
+export type ForceRefreshRefundMutation = { __typename?: 'mutation_root', forceRefreshRefund: { __typename?: 'ForceRefreshRefundOutput', refundId: string } };
+
+export const OrderFieldsFragmentDoc = new TypedDocumentString(`
+    fragment OrderFields on Order {
+  id
+  status
+  merchantId
+  title
+  price
+  currency
+  currentPrice
+  paidAmount
+  refundedAmount
+  remainingAmount
+  customerId
+  projectId
+  subscriptionId
+  returnUrl
+  webhookUrl
+  metadata
+  ip
+  deadlineDate
+  createdAt
+  updatedAt
+}
+    `, {"fragmentName":"OrderFields"}) as unknown as TypedDocumentString<OrderFieldsFragment, unknown>;
+export const CustomerFieldsFragmentDoc = new TypedDocumentString(`
+    fragment CustomerFields on Customer {
+  id
+  email
+  firstName
+  lastName
+}
+    `, {"fragmentName":"CustomerFields"}) as unknown as TypedDocumentString<CustomerFieldsFragment, unknown>;
+export const OrderItemFieldsFragmentDoc = new TypedDocumentString(`
+    fragment OrderItemFields on OrderItem {
+  id
+  name
+  price
+  qty
+  productId
+  details
+  createdAt
+}
+    `, {"fragmentName":"OrderItemFields"}) as unknown as TypedDocumentString<OrderItemFieldsFragment, unknown>;
+export const PaymentFieldsFragmentDoc = new TypedDocumentString(`
+    fragment PaymentFields on Payment {
+  id
+  orderId
+  status
+  amount
+  currency
+  orderCurrencyAmount
+  refundedAmount
+  paymentMethodId
+  externalId
+  merchantId
+  isManual
+  ip
+  redirectUrl
+  error
+  errorMessage
+  rejectReason
+  createdAt
+  updatedAt
+}
+    `, {"fragmentName":"PaymentFields"}) as unknown as TypedDocumentString<PaymentFieldsFragment, unknown>;
+export const RefundFieldsFragmentDoc = new TypedDocumentString(`
+    fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}
+    `, {"fragmentName":"RefundFields"}) as unknown as TypedDocumentString<RefundFieldsFragment, unknown>;
+export const PaymentWithRefundsFragmentDoc = new TypedDocumentString(`
+    fragment PaymentWithRefunds on Payment {
+  ...PaymentFields
+  refunds {
+    ...RefundFields
+  }
+}
+    fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}
+fragment PaymentFields on Payment {
+  id
+  orderId
+  status
+  amount
+  currency
+  orderCurrencyAmount
+  refundedAmount
+  paymentMethodId
+  externalId
+  merchantId
+  isManual
+  ip
+  redirectUrl
+  error
+  errorMessage
+  rejectReason
+  createdAt
+  updatedAt
+}`, {"fragmentName":"PaymentWithRefunds"}) as unknown as TypedDocumentString<PaymentWithRefundsFragment, unknown>;
+export const OrderDetailFragmentDoc = new TypedDocumentString(`
+    fragment OrderDetail on Order {
+  ...OrderFields
+  customer {
+    ...CustomerFields
+  }
+  items {
+    ...OrderItemFields
+  }
+  payments {
+    ...PaymentWithRefunds
+  }
+}
+    fragment CustomerFields on Customer {
+  id
+  email
+  firstName
+  lastName
+}
+fragment OrderItemFields on OrderItem {
+  id
+  name
+  price
+  qty
+  productId
+  details
+  createdAt
+}
+fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}
+fragment PaymentFields on Payment {
+  id
+  orderId
+  status
+  amount
+  currency
+  orderCurrencyAmount
+  refundedAmount
+  paymentMethodId
+  externalId
+  merchantId
+  isManual
+  ip
+  redirectUrl
+  error
+  errorMessage
+  rejectReason
+  createdAt
+  updatedAt
+}
+fragment PaymentWithRefunds on Payment {
+  ...PaymentFields
+  refunds {
+    ...RefundFields
+  }
+}
+fragment OrderFields on Order {
+  id
+  status
+  merchantId
+  title
+  price
+  currency
+  currentPrice
+  paidAmount
+  refundedAmount
+  remainingAmount
+  customerId
+  projectId
+  subscriptionId
+  returnUrl
+  webhookUrl
+  metadata
+  ip
+  deadlineDate
+  createdAt
+  updatedAt
+}`, {"fragmentName":"OrderDetail"}) as unknown as TypedDocumentString<OrderDetailFragment, unknown>;
+export const GetOrderDocument = new TypedDocumentString(`
+    query GetOrder($id: uuid!) {
+  orderByPk(id: $id) {
+    ...OrderDetail
+  }
+}
+    fragment CustomerFields on Customer {
+  id
+  email
+  firstName
+  lastName
+}
+fragment OrderItemFields on OrderItem {
+  id
+  name
+  price
+  qty
+  productId
+  details
+  createdAt
+}
+fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}
+fragment PaymentFields on Payment {
+  id
+  orderId
+  status
+  amount
+  currency
+  orderCurrencyAmount
+  refundedAmount
+  paymentMethodId
+  externalId
+  merchantId
+  isManual
+  ip
+  redirectUrl
+  error
+  errorMessage
+  rejectReason
+  createdAt
+  updatedAt
+}
+fragment PaymentWithRefunds on Payment {
+  ...PaymentFields
+  refunds {
+    ...RefundFields
+  }
+}
+fragment OrderFields on Order {
+  id
+  status
+  merchantId
+  title
+  price
+  currency
+  currentPrice
+  paidAmount
+  refundedAmount
+  remainingAmount
+  customerId
+  projectId
+  subscriptionId
+  returnUrl
+  webhookUrl
+  metadata
+  ip
+  deadlineDate
+  createdAt
+  updatedAt
+}
+fragment OrderDetail on Order {
+  ...OrderFields
+  customer {
+    ...CustomerFields
+  }
+  items {
+    ...OrderItemFields
+  }
+  payments {
+    ...PaymentWithRefunds
+  }
+}`) as unknown as TypedDocumentString<GetOrderQuery, GetOrderQueryVariables>;
+export const ListOrdersDocument = new TypedDocumentString(`
+    query ListOrders($where: OrderBoolExp, $limit: Int, $offset: Int, $orderBy: [OrderOrderBy!]) {
+  order(where: $where, limit: $limit, offset: $offset, orderBy: $orderBy) {
+    ...OrderFields
+  }
+}
+    fragment OrderFields on Order {
+  id
+  status
+  merchantId
+  title
+  price
+  currency
+  currentPrice
+  paidAmount
+  refundedAmount
+  remainingAmount
+  customerId
+  projectId
+  subscriptionId
+  returnUrl
+  webhookUrl
+  metadata
+  ip
+  deadlineDate
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<ListOrdersQuery, ListOrdersQueryVariables>;
+export const FindOrderByMerchantIdDocument = new TypedDocumentString(`
+    query FindOrderByMerchantId($merchantId: String!) {
+  order(where: {merchantId: {_eq: $merchantId}}, limit: 1) {
+    ...OrderDetail
+  }
+}
+    fragment CustomerFields on Customer {
+  id
+  email
+  firstName
+  lastName
+}
+fragment OrderItemFields on OrderItem {
+  id
+  name
+  price
+  qty
+  productId
+  details
+  createdAt
+}
+fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}
+fragment PaymentFields on Payment {
+  id
+  orderId
+  status
+  amount
+  currency
+  orderCurrencyAmount
+  refundedAmount
+  paymentMethodId
+  externalId
+  merchantId
+  isManual
+  ip
+  redirectUrl
+  error
+  errorMessage
+  rejectReason
+  createdAt
+  updatedAt
+}
+fragment PaymentWithRefunds on Payment {
+  ...PaymentFields
+  refunds {
+    ...RefundFields
+  }
+}
+fragment OrderFields on Order {
+  id
+  status
+  merchantId
+  title
+  price
+  currency
+  currentPrice
+  paidAmount
+  refundedAmount
+  remainingAmount
+  customerId
+  projectId
+  subscriptionId
+  returnUrl
+  webhookUrl
+  metadata
+  ip
+  deadlineDate
+  createdAt
+  updatedAt
+}
+fragment OrderDetail on Order {
+  ...OrderFields
+  customer {
+    ...CustomerFields
+  }
+  items {
+    ...OrderItemFields
+  }
+  payments {
+    ...PaymentWithRefunds
+  }
+}`) as unknown as TypedDocumentString<FindOrderByMerchantIdQuery, FindOrderByMerchantIdQueryVariables>;
+export const FindOrderByIdOrMerchantIdDocument = new TypedDocumentString(`
+    query FindOrderByIdOrMerchantId($ids: [uuid!]!, $merchantId: String!) {
+  order(
+    where: {_or: [{id: {_in: $ids}}, {merchantId: {_eq: $merchantId}}]}
+    limit: 1
+  ) {
+    ...OrderDetail
+  }
+}
+    fragment CustomerFields on Customer {
+  id
+  email
+  firstName
+  lastName
+}
+fragment OrderItemFields on OrderItem {
+  id
+  name
+  price
+  qty
+  productId
+  details
+  createdAt
+}
+fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}
+fragment PaymentFields on Payment {
+  id
+  orderId
+  status
+  amount
+  currency
+  orderCurrencyAmount
+  refundedAmount
+  paymentMethodId
+  externalId
+  merchantId
+  isManual
+  ip
+  redirectUrl
+  error
+  errorMessage
+  rejectReason
+  createdAt
+  updatedAt
+}
+fragment PaymentWithRefunds on Payment {
+  ...PaymentFields
+  refunds {
+    ...RefundFields
+  }
+}
+fragment OrderFields on Order {
+  id
+  status
+  merchantId
+  title
+  price
+  currency
+  currentPrice
+  paidAmount
+  refundedAmount
+  remainingAmount
+  customerId
+  projectId
+  subscriptionId
+  returnUrl
+  webhookUrl
+  metadata
+  ip
+  deadlineDate
+  createdAt
+  updatedAt
+}
+fragment OrderDetail on Order {
+  ...OrderFields
+  customer {
+    ...CustomerFields
+  }
+  items {
+    ...OrderItemFields
+  }
+  payments {
+    ...PaymentWithRefunds
+  }
+}`) as unknown as TypedDocumentString<FindOrderByIdOrMerchantIdQuery, FindOrderByIdOrMerchantIdQueryVariables>;
+export const GetOrderPaywallUrlDocument = new TypedDocumentString(`
+    query GetOrderPaywallUrl($orderId: uuid!, $paywall: PaywallOptions) {
+  generateOrderPaywallUrl(orderId: $orderId, paywall: $paywall) {
+    url
+  }
+}
+    `) as unknown as TypedDocumentString<GetOrderPaywallUrlQuery, GetOrderPaywallUrlQueryVariables>;
+export const CreateOrderDocument = new TypedDocumentString(`
+    mutation CreateOrder($input: CreateOrderInput!) {
+  createOrder(input: $input) {
+    orderId
+    paywallUrl
+  }
+}
+    `) as unknown as TypedDocumentString<CreateOrderMutation, CreateOrderMutationVariables>;
+export const CancelOrderDocument = new TypedDocumentString(`
+    mutation CancelOrder($id: uuid!) {
+  cancelOrder(id: $id) {
+    void
+  }
+}
+    `) as unknown as TypedDocumentString<CancelOrderMutation, CancelOrderMutationVariables>;
+export const RefundOrderDocument = new TypedDocumentString(`
+    mutation RefundOrder($input: RefundOrderInput!) {
+  refundOrder(input: $input) {
+    refundId
+    refund {
+      ...RefundFields
+    }
+  }
+}
+    fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<RefundOrderMutation, RefundOrderMutationVariables>;
+export const ResendOrderWebhookDocument = new TypedDocumentString(`
+    mutation ResendOrderWebhook($orderId: uuid!) {
+  resendOrderWebhook(orderId: $orderId) {
+    orderId
+  }
+}
+    `) as unknown as TypedDocumentString<ResendOrderWebhookMutation, ResendOrderWebhookMutationVariables>;
+export const GetPaymentDocument = new TypedDocumentString(`
+    query GetPayment($id: uuid!) {
+  paymentByPk(id: $id) {
+    ...PaymentWithRefunds
+  }
+}
+    fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}
+fragment PaymentFields on Payment {
+  id
+  orderId
+  status
+  amount
+  currency
+  orderCurrencyAmount
+  refundedAmount
+  paymentMethodId
+  externalId
+  merchantId
+  isManual
+  ip
+  redirectUrl
+  error
+  errorMessage
+  rejectReason
+  createdAt
+  updatedAt
+}
+fragment PaymentWithRefunds on Payment {
+  ...PaymentFields
+  refunds {
+    ...RefundFields
+  }
+}`) as unknown as TypedDocumentString<GetPaymentQuery, GetPaymentQueryVariables>;
+export const ListPaymentsDocument = new TypedDocumentString(`
+    query ListPayments($where: PaymentBoolExp, $limit: Int, $offset: Int, $orderBy: [PaymentOrderBy!]) {
+  payment(where: $where, limit: $limit, offset: $offset, orderBy: $orderBy) {
+    ...PaymentFields
+  }
+}
+    fragment PaymentFields on Payment {
+  id
+  orderId
+  status
+  amount
+  currency
+  orderCurrencyAmount
+  refundedAmount
+  paymentMethodId
+  externalId
+  merchantId
+  isManual
+  ip
+  redirectUrl
+  error
+  errorMessage
+  rejectReason
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<ListPaymentsQuery, ListPaymentsQueryVariables>;
+export const ListPaymentsByOrderDocument = new TypedDocumentString(`
+    query ListPaymentsByOrder($orderId: uuid!, $limit: Int, $offset: Int) {
+  payment(
+    where: {orderId: {_eq: $orderId}}
+    orderBy: {createdAt: ASC}
+    limit: $limit
+    offset: $offset
+  ) {
+    ...PaymentWithRefunds
+  }
+}
+    fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}
+fragment PaymentFields on Payment {
+  id
+  orderId
+  status
+  amount
+  currency
+  orderCurrencyAmount
+  refundedAmount
+  paymentMethodId
+  externalId
+  merchantId
+  isManual
+  ip
+  redirectUrl
+  error
+  errorMessage
+  rejectReason
+  createdAt
+  updatedAt
+}
+fragment PaymentWithRefunds on Payment {
+  ...PaymentFields
+  refunds {
+    ...RefundFields
+  }
+}`) as unknown as TypedDocumentString<ListPaymentsByOrderQuery, ListPaymentsByOrderQueryVariables>;
+export const GetPaymentParametersDocument = new TypedDocumentString(`
+    query GetPaymentParameters($input: GetPaymentParametersInput!) {
+  getPaymentParameters(input: $input) {
+    parameters
+  }
+}
+    `) as unknown as TypedDocumentString<GetPaymentParametersQuery, GetPaymentParametersQueryVariables>;
+export const CreatePaymentDocument = new TypedDocumentString(`
+    mutation CreatePayment($input: CreatePaymentInput!) {
+  createPayment(input: $input) {
+    paymentId
+    redirectUrl
+    redirectIframeAllowed
+    payment {
+      ...PaymentFields
+    }
+  }
+}
+    fragment PaymentFields on Payment {
+  id
+  orderId
+  status
+  amount
+  currency
+  orderCurrencyAmount
+  refundedAmount
+  paymentMethodId
+  externalId
+  merchantId
+  isManual
+  ip
+  redirectUrl
+  error
+  errorMessage
+  rejectReason
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<CreatePaymentMutation, CreatePaymentMutationVariables>;
+export const CreateManualPaymentDocument = new TypedDocumentString(`
+    mutation CreateManualPayment($input: CreateManualPaymentInput!) {
+  createManualPayment(input: $input) {
+    paymentId
+    payment {
+      ...PaymentFields
+    }
+  }
+}
+    fragment PaymentFields on Payment {
+  id
+  orderId
+  status
+  amount
+  currency
+  orderCurrencyAmount
+  refundedAmount
+  paymentMethodId
+  externalId
+  merchantId
+  isManual
+  ip
+  redirectUrl
+  error
+  errorMessage
+  rejectReason
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<CreateManualPaymentMutation, CreateManualPaymentMutationVariables>;
+export const ForceRefreshPaymentDocument = new TypedDocumentString(`
+    mutation ForceRefreshPayment($paymentId: uuid!) {
+  forceRefreshPayment(paymentId: $paymentId) {
+    paymentId
+  }
+}
+    `) as unknown as TypedDocumentString<ForceRefreshPaymentMutation, ForceRefreshPaymentMutationVariables>;
+export const RefundPaymentDocument = new TypedDocumentString(`
+    mutation RefundPayment($input: RefundPaymentInput!) {
+  refundPayment(input: $input) {
+    refundId
+    refund {
+      ...RefundFields
+    }
+  }
+}
+    fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<RefundPaymentMutation, RefundPaymentMutationVariables>;
 export const PaycadooPingDocument = new TypedDocumentString(`
     query PaycadooPing {
   __typename
 }
     `) as unknown as TypedDocumentString<PaycadooPingQuery, PaycadooPingQueryVariables>;
+export const GetRefundDocument = new TypedDocumentString(`
+    query GetRefund($id: uuid!) {
+  refundByPk(id: $id) {
+    ...RefundFields
+  }
+}
+    fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<GetRefundQuery, GetRefundQueryVariables>;
+export const ListRefundsDocument = new TypedDocumentString(`
+    query ListRefunds($where: RefundBoolExp, $limit: Int, $offset: Int, $orderBy: [RefundOrderBy!]) {
+  refund(where: $where, limit: $limit, offset: $offset, orderBy: $orderBy) {
+    ...RefundFields
+  }
+}
+    fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<ListRefundsQuery, ListRefundsQueryVariables>;
+export const ListRefundsByPaymentDocument = new TypedDocumentString(`
+    query ListRefundsByPayment($paymentId: uuid!, $limit: Int, $offset: Int) {
+  refund(
+    where: {paymentId: {_eq: $paymentId}}
+    orderBy: {createdAt: ASC}
+    limit: $limit
+    offset: $offset
+  ) {
+    ...RefundFields
+  }
+}
+    fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<ListRefundsByPaymentQuery, ListRefundsByPaymentQueryVariables>;
+export const ForceRefreshRefundDocument = new TypedDocumentString(`
+    mutation ForceRefreshRefund($refundId: uuid!) {
+  forceRefreshRefund(refundId: $refundId) {
+    refundId
+  }
+}
+    `) as unknown as TypedDocumentString<ForceRefreshRefundMutation, ForceRefreshRefundMutationVariables>;

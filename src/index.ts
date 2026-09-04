@@ -35,6 +35,21 @@ export type {
   PaycadooErrorCode,
 } from "./errorCodes.js";
 
+export type {
+  CreateOrderResult,
+  IdempotentOrderResult,
+  ListAllOrdersOptions,
+  ListOrdersOptions,
+  OrdersResource,
+} from "./resources/orders.js";
+export type {
+  CreatePaymentResult,
+  ListPaymentsOptions,
+  PaymentsResource,
+} from "./resources/payments.js";
+export type { ListRefundsOptions, RefundsResource } from "./resources/refunds.js";
+export type { ListAllOptions, ListOptions } from "./resources/shared.js";
+
 export { collect, paginate } from "./pagination.js";
 export type { PageParams, PaginateOptions } from "./pagination.js";
 

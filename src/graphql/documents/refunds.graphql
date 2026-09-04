@@ -1,0 +1,33 @@
+query GetRefund($id: uuid!) {
+  refundByPk(id: $id) {
+    ...RefundFields
+  }
+}
+
+query ListRefunds(
+  $where: RefundBoolExp
+  $limit: Int
+  $offset: Int
+  $orderBy: [RefundOrderBy!]
+) {
+  refund(where: $where, limit: $limit, offset: $offset, orderBy: $orderBy) {
+    ...RefundFields
+  }
+}
+
+query ListRefundsByPayment($paymentId: uuid!, $limit: Int, $offset: Int) {
+  refund(
+    where: { paymentId: { _eq: $paymentId } }
+    orderBy: { createdAt: ASC }
+    limit: $limit
+    offset: $offset
+  ) {
+    ...RefundFields
+  }
+}
+
+mutation ForceRefreshRefund($refundId: uuid!) {
+  forceRefreshRefund(refundId: $refundId) {
+    refundId
+  }
+}

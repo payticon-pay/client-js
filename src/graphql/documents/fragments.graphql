@@ -1,0 +1,93 @@
+fragment CustomerFields on Customer {
+  id
+  email
+  firstName
+  lastName
+}
+
+fragment OrderItemFields on OrderItem {
+  id
+  name
+  price
+  qty
+  productId
+  details
+  createdAt
+}
+
+fragment RefundFields on Refund {
+  id
+  paymentId
+  status
+  amount
+  orderCurrencyAmount
+  merchantId
+  externalId
+  reason
+  createdAt
+  updatedAt
+}
+
+fragment PaymentFields on Payment {
+  id
+  orderId
+  status
+  amount
+  currency
+  orderCurrencyAmount
+  refundedAmount
+  paymentMethodId
+  externalId
+  merchantId
+  isManual
+  ip
+  redirectUrl
+  error
+  errorMessage
+  rejectReason
+  createdAt
+  updatedAt
+}
+
+fragment PaymentWithRefunds on Payment {
+  ...PaymentFields
+  refunds {
+    ...RefundFields
+  }
+}
+
+fragment OrderFields on Order {
+  id
+  status
+  merchantId
+  title
+  price
+  currency
+  currentPrice
+  paidAmount
+  refundedAmount
+  remainingAmount
+  customerId
+  projectId
+  subscriptionId
+  returnUrl
+  webhookUrl
+  metadata
+  ip
+  deadlineDate
+  createdAt
+  updatedAt
+}
+
+fragment OrderDetail on Order {
+  ...OrderFields
+  customer {
+    ...CustomerFields
+  }
+  items {
+    ...OrderItemFields
+  }
+  payments {
+    ...PaymentWithRefunds
+  }
+}

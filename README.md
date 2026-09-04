@@ -92,6 +92,102 @@ Override per call when you know better:
 await paycadoo.raw(SomeMutation, variables, { idempotent: true });
 ```
 
+## Orders
+
+```ts
+const { orderId, paywallUrl } = await paycadoo.orders.create({
+  merchantId: invoice.id, // your key — Paycadoo rejects a second order with the same one
+  title: `Invoice ${invoice.number}`,
+  price: 12_900, // integer minor units, always
+  currency: "PLN",
+  customer: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName },
+  items: [{ name: "Subscription", price: 12_900, qty: 1 }],
+});
+```
+
+| Method | Description |
+|---|---|
+| `orders.get(id, options?)` | One order with customer, items, payments and refunds; `null` when absent |
+| `orders.list(options?)` | One page — `where`, `orderBy`, `limit`, `offset` |
+| `orders.listAll(options?)` | Async generator over every page |
+| `orders.findByMerchantId(merchantId, options?)` | Lookup by your own key; `null` when absent |
+| `orders.findByIdOrMerchantId(identifier, options?)` | Lookup under either convention in one query |
+| `orders.create(input, options?)` | Creates an order. **Never retried** |
+| `orders.createIdempotent(input, options?)` | Creates, or recovers the one that already exists |
+| `orders.cancel(id, options?)` | Cancels. Retryable |
+| `orders.paywallUrl(orderId, paywall?, options?)` | Paywall link for an existing order |
+| `orders.refund(input, options?)` | Refunds the order. **Never retried** |
+| `orders.resendWebhook(orderId, options?)` | Re-delivers the order webhook. Retryable |
+
+### Idempotency by `merchantId`
+
+`merchantId` is your idempotency key: Paycadoo rejects a second order carrying the same one within a
+project, with `ORDER_ALREADY_EXISTS`. `createIdempotent` turns that into a result rather than a
+branch you write by hand:
+
+```ts
+const { orderId, paywallUrl, reused } = await paycadoo.orders.createIdempotent({
+  merchantId: invoice.id,
+  /* … */
+});
+```
+
+It recovers after **any** failure, not just that code. A timeout that fires *after* the server has
+written the order gives you a transport error, never a domain code — so recovery keyed on the code
+alone would create a duplicate exactly in the case that matters. If no order exists under that
+`merchantId`, the original error is rethrown untouched.
+
+## Payments
+
+| Method | Description |
+|---|---|
+| `payments.get(id, options?)` | One payment with its refunds; `null` when absent |
+| `payments.list(options?)` | One page — `where`, `orderBy`, `limit`, `offset` |
+| `payments.listByOrder(orderId, options?)` | Every attempt on one order, oldest first |
+| `payments.create(input, options?)` | Takes a payment. **Never retried** |
+| `payments.createManual(input, options?)` | Records a payment taken outside Paycadoo. **Never retried** |
+| `payments.forceRefresh(paymentId, options?)` | Re-reads the payment from the provider. Retryable |
+| `payments.refund(input, options?)` | Refunds the payment. **Never retried** |
+| `payments.parameters(input, options?)` | Provider parameters for a method, typed `unknown` |
+
+After a timed-out `payments.create`, **reconcile before retrying**:
+
+```ts
+try {
+  await paycadoo.payments.create(input);
+} catch (error) {
+  if (error instanceof PaycadooTimeoutError) {
+    const attempts = await paycadoo.payments.listByOrder(input.orderId);
+    // decide from what actually landed; never just call create() again
+  }
+  throw error;
+}
+```
+
+`payments.parameters` returns the provider's own payload, so it arrives as `unknown` rather than
+`any` — narrow it where you use it:
+
+```ts
+const parameters = await paycadoo.payments.parameters({ amount, currency, paymentMethodId });
+if (typeof parameters === "object" && parameters !== null && "blikCodeRequired" in parameters) {
+  // …
+}
+```
+
+## Refunds
+
+| Method | Description |
+|---|---|
+| `refunds.get(id, options?)` | One refund; `null` when absent |
+| `refunds.list(options?)` | One page — `where`, `orderBy`, `limit`, `offset` |
+| `refunds.listByPayment(paymentId, options?)` | Every refund on one payment, oldest first |
+| `refunds.forceRefresh(refundId, options?)` | Re-reads the refund from the provider. Retryable |
+
+## Amounts
+
+Every amount is an integer in the currency's minor unit — `12_900` is 129.00 PLN. There are no
+decimals anywhere in this API, and none in this package.
+
 ## `raw()`
 
 Everything this package does not wrap is still reachable, with types:
