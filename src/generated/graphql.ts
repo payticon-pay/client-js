@@ -6458,6 +6458,22 @@ export type OrderFieldsFragment = { __typename?: 'Order', id: string, status: Or
 
 export type OrderDetailFragment = { __typename?: 'Order', id: string, status: OrderStatusEnum, merchantId?: string | null, title?: string | null, price: number, currency: CurrencyEnum, currentPrice?: number | null, paidAmount?: number | null, refundedAmount?: number | null, remainingAmount?: number | null, customerId: string, projectId: string, subscriptionId?: string | null, returnUrl?: string | null, webhookUrl: string, metadata: unknown, ip?: string | null, deadlineDate?: string | null, createdAt: string, updatedAt: string, customer?: { __typename?: 'Customer', id: string, email: string, firstName: string, lastName: string } | null, items: Array<{ __typename?: 'OrderItem', id: string, name?: string | null, price: number, qty: number, productId?: string | null, details?: unknown | null, createdAt: string }>, payments: Array<{ __typename?: 'Payment', id: string, orderId: string, status: PaymentStatusEnum, amount: number, currency: string, orderCurrencyAmount: number, refundedAmount?: number | null, paymentMethodId: string, externalId?: string | null, merchantId?: string | null, isManual: boolean, ip?: string | null, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, rejectReason?: string | null, createdAt: string, updatedAt: string, refunds: Array<{ __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string }> }> };
 
+export type ProductFieldsFragment = { __typename?: 'Product', id: string, externalId: string, name: string, price: number, currency: CurrencyEnum, imageUrl?: string | null, subscriptionInterval: SubscriptionIntervalEnum, customInterval?: unknown | null, additionalParameters?: unknown | null, projectId: string, deletedAt?: string | null, createdAt: string };
+
+export type SubscriptionItemPauseFieldsFragment = { __typename?: 'SubscriptionItemPause', id: string, subscriptionItemId: string, startsAt: string, endsAt: string, createdAt: string };
+
+export type SubscriptionItemPriceFieldsFragment = { __typename?: 'SubscriptionItemPrice', id: string, subscriptionItemId: string, price: number, qty: number, startsAt: string, createdAt: string };
+
+export type SubscriptionItemFieldsFragment = { __typename?: 'SubscriptionItem', id: string, subscriptionId: string, externalId?: string | null, externalProductId?: string | null, productId?: string | null, name?: string | null, imageUrl?: string | null, price?: number | null, qty?: number | null, details?: unknown | null, startsAt: string, endsAt?: string | null, isActive?: boolean | null, isPaused?: boolean | null, createdAt: string, updatedAt: string };
+
+export type SubscriptionItemDetailFragment = { __typename?: 'SubscriptionItem', id: string, subscriptionId: string, externalId?: string | null, externalProductId?: string | null, productId?: string | null, name?: string | null, imageUrl?: string | null, price?: number | null, qty?: number | null, details?: unknown | null, startsAt: string, endsAt?: string | null, isActive?: boolean | null, isPaused?: boolean | null, createdAt: string, updatedAt: string, product?: { __typename?: 'Product', id: string, externalId: string, name: string, price: number, currency: CurrencyEnum, imageUrl?: string | null, subscriptionInterval: SubscriptionIntervalEnum, customInterval?: unknown | null, additionalParameters?: unknown | null, projectId: string, deletedAt?: string | null, createdAt: string } | null, prices: Array<{ __typename?: 'SubscriptionItemPrice', id: string, subscriptionItemId: string, price: number, qty: number, startsAt: string, createdAt: string }> };
+
+export type SubscriptionFieldsFragment = { __typename?: 'Subscription', id: string, customerId: string, title?: string | null, currency: CurrencyEnum, interval: SubscriptionIntervalEnum, customInterval?: unknown | null, paymentInAdvance: boolean, paymentMethod: string, paymentTokenId?: string | null, firstBillingDate: string, currentBillingDate?: string | null, lastBillingDate?: string | null, isActive?: boolean | null, webhookUrl: string, createdAt: string, updatedAt: string };
+
+export type VoucherFieldsFragment = { __typename?: 'Voucher', id: string, code: string, groupId: string, generationId?: string | null, balance?: number | null, activeBalance?: number | null, startBalance: number, isArchived: boolean, projectId: string, createdAt: string, updatedAt: string };
+
+export type VoucherGroupFieldsFragment = { __typename?: 'VoucherGroup', id: string, name: string, currency: CurrencyEnum, codeLength: number, startsAt: string, endsAt?: string | null, isActive?: boolean | null, balanceSum?: number | null, startBalanceSum?: number | null, createdAt: string, updatedAt: string };
+
 export type GetOrderQueryVariables = Exact<{
   id: Scalars['uuid']['input'];
 }>;
@@ -6587,10 +6603,75 @@ export type RefundPaymentMutationVariables = Exact<{
 
 export type RefundPaymentMutation = { __typename?: 'mutation_root', refundPayment: { __typename?: 'RefundPaymentOutput', refundId: string, refund?: { __typename?: 'Refund', id: string, paymentId: string, status: RefundStatusEnum, amount: number, orderCurrencyAmount: number, merchantId?: string | null, externalId?: string | null, reason?: string | null, createdAt: string, updatedAt: string } | null } };
 
+export type VerifyPaywallTokenMutationVariables = Exact<{
+  paymentToken: Scalars['String']['input'];
+}>;
+
+
+export type VerifyPaywallTokenMutation = { __typename?: 'mutation_root', verifyPaywallToken: { __typename?: 'VerifyPaywallTokenOutput', orderId: string, order?: { __typename?: 'Order', id: string, status: OrderStatusEnum, merchantId?: string | null, title?: string | null, price: number, currency: CurrencyEnum, currentPrice?: number | null, paidAmount?: number | null, refundedAmount?: number | null, remainingAmount?: number | null, customerId: string, projectId: string, subscriptionId?: string | null, returnUrl?: string | null, webhookUrl: string, metadata: unknown, ip?: string | null, deadlineDate?: string | null, createdAt: string, updatedAt: string } | null } };
+
+export type GetProjectPaymentMethodsQueryVariables = Exact<{
+  paymentCurrency: Scalars['String']['input'];
+}>;
+
+
+export type GetProjectPaymentMethodsQuery = { __typename?: 'query_root', getProjectPaymentMethod: Array<{ __typename?: 'GetProjectPaymentMethodOutput', paymentMethodId: string, projectId: string, projectProviderId: string, providerType: string, categoryId?: string | null, currencies: Array<string>, kycRequired?: boolean | null }> };
+
+export type GetCustomPaywallMessageQueryVariables = Exact<{
+  paymentCurrency: Scalars['String']['input'];
+}>;
+
+
+export type GetCustomPaywallMessageQuery = { __typename?: 'query_root', getCustomPaywallMessage?: { __typename?: 'GetCustomPaywallMessageOutput', type: string, message: string } | null };
+
+export type GetApplePaySessionQueryVariables = Exact<{
+  input: GetApplePaySessionInput;
+}>;
+
+
+export type GetApplePaySessionQuery = { __typename?: 'query_root', getApplePaySession: { __typename?: 'GetApplePaySessionOutput', session: unknown } };
+
+export type ExchangeCurrencyQueryVariables = Exact<{
+  amount: Scalars['Int']['input'];
+  from: Scalars['String']['input'];
+  to: Scalars['String']['input'];
+}>;
+
+
+export type ExchangeCurrencyQuery = { __typename?: 'query_root', exchangeCurrency?: { __typename?: 'GetCurrencyExchangeRateOutput', amount: number, exchangeRate: number, exchangeMargin: number, exchangeRateWithoutMargin: number } | null };
+
 export type PaycadooPingQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type PaycadooPingQuery = { __typename: 'query_root' };
+
+export type GetProductQueryVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type GetProductQuery = { __typename?: 'query_root', productByPk?: { __typename?: 'Product', id: string, externalId: string, name: string, price: number, currency: CurrencyEnum, imageUrl?: string | null, subscriptionInterval: SubscriptionIntervalEnum, customInterval?: unknown | null, additionalParameters?: unknown | null, projectId: string, deletedAt?: string | null, createdAt: string } | null };
+
+export type ListProductsQueryVariables = Exact<{
+  externalIds?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  excludeExternalIds?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  notDeleted?: InputMaybe<Scalars['Boolean']['input']>;
+  and: Array<ProductBoolExp> | ProductBoolExp;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ProductOrderBy> | ProductOrderBy>;
+}>;
+
+
+export type ListProductsQuery = { __typename?: 'query_root', product: Array<{ __typename?: 'Product', id: string, externalId: string, name: string, price: number, currency: CurrencyEnum, imageUrl?: string | null, subscriptionInterval: SubscriptionIntervalEnum, customInterval?: unknown | null, additionalParameters?: unknown | null, projectId: string, deletedAt?: string | null, createdAt: string }> };
+
+export type GetProductByExternalIdQueryVariables = Exact<{
+  externalId: Scalars['String']['input'];
+  notDeleted?: InputMaybe<Scalars['Boolean']['input']>;
+}>;
+
+
+export type GetProductByExternalIdQuery = { __typename?: 'query_root', product: Array<{ __typename?: 'Product', id: string, externalId: string, name: string, price: number, currency: CurrencyEnum, imageUrl?: string | null, subscriptionInterval: SubscriptionIntervalEnum, customInterval?: unknown | null, additionalParameters?: unknown | null, projectId: string, deletedAt?: string | null, createdAt: string }> };
 
 export type GetRefundQueryVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -6624,6 +6705,204 @@ export type ForceRefreshRefundMutationVariables = Exact<{
 
 
 export type ForceRefreshRefundMutation = { __typename?: 'mutation_root', forceRefreshRefund: { __typename?: 'ForceRefreshRefundOutput', refundId: string } };
+
+export type GetSubscriptionQueryVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type GetSubscriptionQuery = { __typename?: 'query_root', SubscriptionByPk?: { __typename?: 'Subscription', id: string, customerId: string, title?: string | null, currency: CurrencyEnum, interval: SubscriptionIntervalEnum, customInterval?: unknown | null, paymentInAdvance: boolean, paymentMethod: string, paymentTokenId?: string | null, firstBillingDate: string, currentBillingDate?: string | null, lastBillingDate?: string | null, isActive?: boolean | null, webhookUrl: string, createdAt: string, updatedAt: string, items: Array<{ __typename?: 'SubscriptionItem', id: string, subscriptionId: string, externalId?: string | null, externalProductId?: string | null, productId?: string | null, name?: string | null, imageUrl?: string | null, price?: number | null, qty?: number | null, details?: unknown | null, startsAt: string, endsAt?: string | null, isActive?: boolean | null, isPaused?: boolean | null, createdAt: string, updatedAt: string }> } | null };
+
+export type ListSubscriptionsQueryVariables = Exact<{
+  where?: InputMaybe<SubscriptionBoolExp>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SubscriptionOrderBy> | SubscriptionOrderBy>;
+}>;
+
+
+export type ListSubscriptionsQuery = { __typename?: 'query_root', Subscription: Array<{ __typename?: 'Subscription', id: string, customerId: string, title?: string | null, currency: CurrencyEnum, interval: SubscriptionIntervalEnum, customInterval?: unknown | null, paymentInAdvance: boolean, paymentMethod: string, paymentTokenId?: string | null, firstBillingDate: string, currentBillingDate?: string | null, lastBillingDate?: string | null, isActive?: boolean | null, webhookUrl: string, createdAt: string, updatedAt: string }> };
+
+export type GetSubscriptionUrlQueryVariables = Exact<{
+  subscriptionId: Scalars['uuid']['input'];
+  returnUrl?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetSubscriptionUrlQuery = { __typename?: 'query_root', generateSubscriptionUrl: { __typename?: 'GenerateSubscriptionUrlOutput', url: string } };
+
+export type CalculateSubscriptionPriceQueryVariables = Exact<{
+  input: CalculateSubscriptionPriceInput;
+}>;
+
+
+export type CalculateSubscriptionPriceQuery = { __typename?: 'query_root', calculateSubscriptionPrice: { __typename?: 'CalculateSubscriptionPriceOutput', sum: number, items: Array<{ __typename?: 'CalculateSubscriptionPriceOutputItem', id: string, price: number }> } };
+
+export type CreateSubscriptionMutationVariables = Exact<{
+  object: SubscriptionInsertInput;
+}>;
+
+
+export type CreateSubscriptionMutation = { __typename?: 'mutation_root', insertSubscriptionOne?: { __typename?: 'Subscription', id: string, customerId: string, title?: string | null, currency: CurrencyEnum, interval: SubscriptionIntervalEnum, customInterval?: unknown | null, paymentInAdvance: boolean, paymentMethod: string, paymentTokenId?: string | null, firstBillingDate: string, currentBillingDate?: string | null, lastBillingDate?: string | null, isActive?: boolean | null, webhookUrl: string, createdAt: string, updatedAt: string } | null };
+
+export type GetSubscriptionItemQueryVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type GetSubscriptionItemQuery = { __typename?: 'query_root', subscriptionItemByPk?: { __typename?: 'SubscriptionItem', id: string, subscriptionId: string, externalId?: string | null, externalProductId?: string | null, productId?: string | null, name?: string | null, imageUrl?: string | null, price?: number | null, qty?: number | null, details?: unknown | null, startsAt: string, endsAt?: string | null, isActive?: boolean | null, isPaused?: boolean | null, createdAt: string, updatedAt: string, product?: { __typename?: 'Product', id: string, externalId: string, name: string, price: number, currency: CurrencyEnum, imageUrl?: string | null, subscriptionInterval: SubscriptionIntervalEnum, customInterval?: unknown | null, additionalParameters?: unknown | null, projectId: string, deletedAt?: string | null, createdAt: string } | null, prices: Array<{ __typename?: 'SubscriptionItemPrice', id: string, subscriptionItemId: string, price: number, qty: number, startsAt: string, createdAt: string }> } | null };
+
+export type ListSubscriptionItemsQueryVariables = Exact<{
+  where?: InputMaybe<SubscriptionItemBoolExp>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SubscriptionItemOrderBy> | SubscriptionItemOrderBy>;
+}>;
+
+
+export type ListSubscriptionItemsQuery = { __typename?: 'query_root', subscriptionItem: Array<{ __typename?: 'SubscriptionItem', id: string, subscriptionId: string, externalId?: string | null, externalProductId?: string | null, productId?: string | null, name?: string | null, imageUrl?: string | null, price?: number | null, qty?: number | null, details?: unknown | null, startsAt: string, endsAt?: string | null, isActive?: boolean | null, isPaused?: boolean | null, createdAt: string, updatedAt: string }> };
+
+export type FindActiveSubscriptionItemQueryVariables = Exact<{
+  and: Array<SubscriptionItemBoolExp> | SubscriptionItemBoolExp;
+}>;
+
+
+export type FindActiveSubscriptionItemQuery = { __typename?: 'query_root', subscriptionItem: Array<{ __typename?: 'SubscriptionItem', id: string, subscriptionId: string, externalId?: string | null, externalProductId?: string | null, productId?: string | null, name?: string | null, imageUrl?: string | null, price?: number | null, qty?: number | null, details?: unknown | null, startsAt: string, endsAt?: string | null, isActive?: boolean | null, isPaused?: boolean | null, createdAt: string, updatedAt: string, pauses: Array<{ __typename?: 'SubscriptionItemPause', id: string, subscriptionItemId: string, startsAt: string, endsAt: string, createdAt: string }>, product?: { __typename?: 'Product', id: string, externalId: string, name: string, price: number, currency: CurrencyEnum, imageUrl?: string | null, subscriptionInterval: SubscriptionIntervalEnum, customInterval?: unknown | null, additionalParameters?: unknown | null, projectId: string, deletedAt?: string | null, createdAt: string } | null, prices: Array<{ __typename?: 'SubscriptionItemPrice', id: string, subscriptionItemId: string, price: number, qty: number, startsAt: string, createdAt: string }> }> };
+
+export type FindScheduledSubscriptionItemQueryVariables = Exact<{
+  and: Array<SubscriptionItemBoolExp> | SubscriptionItemBoolExp;
+}>;
+
+
+export type FindScheduledSubscriptionItemQuery = { __typename?: 'query_root', subscriptionItem: Array<{ __typename?: 'SubscriptionItem', id: string, subscriptionId: string, externalId?: string | null, externalProductId?: string | null, productId?: string | null, name?: string | null, imageUrl?: string | null, price?: number | null, qty?: number | null, details?: unknown | null, startsAt: string, endsAt?: string | null, isActive?: boolean | null, isPaused?: boolean | null, createdAt: string, updatedAt: string, pauses: Array<{ __typename?: 'SubscriptionItemPause', id: string, subscriptionItemId: string, startsAt: string, endsAt: string, createdAt: string }>, product?: { __typename?: 'Product', id: string, externalId: string, name: string, price: number, currency: CurrencyEnum, imageUrl?: string | null, subscriptionInterval: SubscriptionIntervalEnum, customInterval?: unknown | null, additionalParameters?: unknown | null, projectId: string, deletedAt?: string | null, createdAt: string } | null, prices: Array<{ __typename?: 'SubscriptionItemPrice', id: string, subscriptionItemId: string, price: number, qty: number, startsAt: string, createdAt: string }> }> };
+
+export type InsertSubscriptionItemMutationVariables = Exact<{
+  object: SubscriptionItemInsertInput;
+}>;
+
+
+export type InsertSubscriptionItemMutation = { __typename?: 'mutation_root', insertSubscriptionItemOne?: { __typename?: 'SubscriptionItem', id: string, subscriptionId: string, externalId?: string | null, externalProductId?: string | null, productId?: string | null, name?: string | null, imageUrl?: string | null, price?: number | null, qty?: number | null, details?: unknown | null, startsAt: string, endsAt?: string | null, isActive?: boolean | null, isPaused?: boolean | null, createdAt: string, updatedAt: string, product?: { __typename?: 'Product', id: string, externalId: string, name: string, price: number, currency: CurrencyEnum, imageUrl?: string | null, subscriptionInterval: SubscriptionIntervalEnum, customInterval?: unknown | null, additionalParameters?: unknown | null, projectId: string, deletedAt?: string | null, createdAt: string } | null, prices: Array<{ __typename?: 'SubscriptionItemPrice', id: string, subscriptionItemId: string, price: number, qty: number, startsAt: string, createdAt: string }> } | null };
+
+export type SetSubscriptionItemEndsAtMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+  endsAt?: InputMaybe<Scalars['timestamptz']['input']>;
+}>;
+
+
+export type SetSubscriptionItemEndsAtMutation = { __typename?: 'mutation_root', updateSubscriptionItemByPk?: { __typename?: 'SubscriptionItem', id: string, subscriptionId: string, externalId?: string | null, externalProductId?: string | null, productId?: string | null, name?: string | null, imageUrl?: string | null, price?: number | null, qty?: number | null, details?: unknown | null, startsAt: string, endsAt?: string | null, isActive?: boolean | null, isPaused?: boolean | null, createdAt: string, updatedAt: string, product?: { __typename?: 'Product', id: string, externalId: string, name: string, price: number, currency: CurrencyEnum, imageUrl?: string | null, subscriptionInterval: SubscriptionIntervalEnum, customInterval?: unknown | null, additionalParameters?: unknown | null, projectId: string, deletedAt?: string | null, createdAt: string } | null, prices: Array<{ __typename?: 'SubscriptionItemPrice', id: string, subscriptionItemId: string, price: number, qty: number, startsAt: string, createdAt: string }> } | null };
+
+export type EndSubscriptionItemsMutationVariables = Exact<{
+  where: SubscriptionItemBoolExp;
+  endsAt?: InputMaybe<Scalars['timestamptz']['input']>;
+}>;
+
+
+export type EndSubscriptionItemsMutation = { __typename?: 'mutation_root', updateSubscriptionItem?: { __typename?: 'SubscriptionItemMutationResponse', affectedRows: number } | null };
+
+export type EditSubscriptionItemMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+  input: UpdateSubscriptionItemSubscriptionitemsetinput;
+}>;
+
+
+export type EditSubscriptionItemMutation = { __typename?: 'mutation_root', editSubscriptionItem?: { __typename?: 'UpdateSubscriptionItemOutput', id: string } | null };
+
+export type UpdateSubscriptionItemPricesByProductMutationVariables = Exact<{
+  productId: Scalars['String']['input'];
+  price: Scalars['Int']['input'];
+  startsAt: Scalars['timestamp']['input'];
+}>;
+
+
+export type UpdateSubscriptionItemPricesByProductMutation = { __typename?: 'mutation_root', updateSubscriptionItemPricesByProductId: { __typename?: 'UpdateSubscriptionItemPricesByProductIdOutput', ids: Array<string> } };
+
+export type ListSubscriptionItemPausesQueryVariables = Exact<{
+  where?: InputMaybe<SubscriptionItemPauseBoolExp>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<SubscriptionItemPauseOrderBy> | SubscriptionItemPauseOrderBy>;
+}>;
+
+
+export type ListSubscriptionItemPausesQuery = { __typename?: 'query_root', subscriptionItemPause: Array<{ __typename?: 'SubscriptionItemPause', id: string, subscriptionItemId: string, startsAt: string, endsAt: string, createdAt: string }> };
+
+export type InsertSubscriptionItemPauseMutationVariables = Exact<{
+  object: SubscriptionItemPauseInsertInput;
+}>;
+
+
+export type InsertSubscriptionItemPauseMutation = { __typename?: 'mutation_root', insertSubscriptionItemPauseOne?: { __typename?: 'SubscriptionItemPause', id: string, subscriptionItemId: string, startsAt: string, endsAt: string, createdAt: string } | null };
+
+export type DeleteSubscriptionItemPauseMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type DeleteSubscriptionItemPauseMutation = { __typename?: 'mutation_root', deleteSubscriptionItemPauseByPk?: { __typename?: 'SubscriptionItemPause', id: string, subscriptionItemId: string, startsAt: string, endsAt: string, createdAt: string } | null };
+
+export type GetVoucherByCodeQueryVariables = Exact<{
+  code: Scalars['String']['input'];
+}>;
+
+
+export type GetVoucherByCodeQuery = { __typename?: 'query_root', voucherByCode?: { __typename?: 'VoucherOutput', id: string, code: string, currency: string, balance: number, activeBalance: number } | null };
+
+export type GetVoucherQueryVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type GetVoucherQuery = { __typename?: 'query_root', voucherByPk?: { __typename?: 'Voucher', id: string, code: string, groupId: string, generationId?: string | null, balance?: number | null, activeBalance?: number | null, startBalance: number, isArchived: boolean, projectId: string, createdAt: string, updatedAt: string } | null };
+
+export type ListVouchersQueryVariables = Exact<{
+  where?: InputMaybe<VoucherBoolExp>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<VoucherOrderBy> | VoucherOrderBy>;
+}>;
+
+
+export type ListVouchersQuery = { __typename?: 'query_root', voucher: Array<{ __typename?: 'Voucher', id: string, code: string, groupId: string, generationId?: string | null, balance?: number | null, activeBalance?: number | null, startBalance: number, isArchived: boolean, projectId: string, createdAt: string, updatedAt: string }> };
+
+export type GenerateVoucherMutationVariables = Exact<{
+  input: GenerateOneVoucherInput;
+}>;
+
+
+export type GenerateVoucherMutation = { __typename?: 'mutation_root', generateVoucher: { __typename?: 'GenerateOneVoucherOutput', voucherId: string, voucher?: { __typename?: 'Voucher', id: string, code: string, groupId: string, generationId?: string | null, balance?: number | null, activeBalance?: number | null, startBalance: number, isArchived: boolean, projectId: string, createdAt: string, updatedAt: string } | null } };
+
+export type GenerateVouchersMutationVariables = Exact<{
+  groupId: Scalars['uuid']['input'];
+  count: Scalars['Int']['input'];
+  startBalance: Scalars['Int']['input'];
+}>;
+
+
+export type GenerateVouchersMutation = { __typename?: 'mutation_root', generateVouchers: { __typename?: 'GenerateVouchersOutput', generationId: string, vouchers: Array<{ __typename?: 'Voucher', id: string, code: string, groupId: string, generationId?: string | null, balance?: number | null, activeBalance?: number | null, startBalance: number, isArchived: boolean, projectId: string, createdAt: string, updatedAt: string }> } };
+
+export type GetVoucherGroupQueryVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type GetVoucherGroupQuery = { __typename?: 'query_root', voucherGroupByPk?: { __typename?: 'VoucherGroup', id: string, name: string, currency: CurrencyEnum, codeLength: number, startsAt: string, endsAt?: string | null, isActive?: boolean | null, balanceSum?: number | null, startBalanceSum?: number | null, createdAt: string, updatedAt: string } | null };
+
+export type ListVoucherGroupsQueryVariables = Exact<{
+  where?: InputMaybe<VoucherGroupBoolExp>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<VoucherGroupOrderBy> | VoucherGroupOrderBy>;
+}>;
+
+
+export type ListVoucherGroupsQuery = { __typename?: 'query_root', voucherGroup: Array<{ __typename?: 'VoucherGroup', id: string, name: string, currency: CurrencyEnum, codeLength: number, startsAt: string, endsAt?: string | null, isActive?: boolean | null, balanceSum?: number | null, startBalanceSum?: number | null, createdAt: string, updatedAt: string }> };
+
+export type CreateVoucherGroupMutationVariables = Exact<{
+  object: VoucherGroupInsertInput;
+}>;
+
+
+export type CreateVoucherGroupMutation = { __typename?: 'mutation_root', insertVoucherGroupOne?: { __typename?: 'VoucherGroup', id: string, name: string, currency: CurrencyEnum, codeLength: number, startsAt: string, endsAt?: string | null, isActive?: boolean | null, balanceSum?: number | null, startBalanceSum?: number | null, createdAt: string, updatedAt: string } | null };
 
 export const OrderFieldsFragmentDoc = new TypedDocumentString(`
     fragment OrderFields on Order {
@@ -6831,6 +7110,161 @@ fragment OrderFields on Order {
   createdAt
   updatedAt
 }`, {"fragmentName":"OrderDetail"}) as unknown as TypedDocumentString<OrderDetailFragment, unknown>;
+export const SubscriptionItemPauseFieldsFragmentDoc = new TypedDocumentString(`
+    fragment SubscriptionItemPauseFields on SubscriptionItemPause {
+  id
+  subscriptionItemId
+  startsAt
+  endsAt
+  createdAt
+}
+    `, {"fragmentName":"SubscriptionItemPauseFields"}) as unknown as TypedDocumentString<SubscriptionItemPauseFieldsFragment, unknown>;
+export const SubscriptionItemFieldsFragmentDoc = new TypedDocumentString(`
+    fragment SubscriptionItemFields on SubscriptionItem {
+  id
+  subscriptionId
+  externalId
+  externalProductId
+  productId
+  name
+  imageUrl
+  price
+  qty
+  details
+  startsAt
+  endsAt
+  isActive
+  isPaused
+  createdAt
+  updatedAt
+}
+    `, {"fragmentName":"SubscriptionItemFields"}) as unknown as TypedDocumentString<SubscriptionItemFieldsFragment, unknown>;
+export const ProductFieldsFragmentDoc = new TypedDocumentString(`
+    fragment ProductFields on Product {
+  id
+  externalId
+  name
+  price
+  currency
+  imageUrl
+  subscriptionInterval
+  customInterval
+  additionalParameters
+  projectId
+  deletedAt
+  createdAt
+}
+    `, {"fragmentName":"ProductFields"}) as unknown as TypedDocumentString<ProductFieldsFragment, unknown>;
+export const SubscriptionItemPriceFieldsFragmentDoc = new TypedDocumentString(`
+    fragment SubscriptionItemPriceFields on SubscriptionItemPrice {
+  id
+  subscriptionItemId
+  price
+  qty
+  startsAt
+  createdAt
+}
+    `, {"fragmentName":"SubscriptionItemPriceFields"}) as unknown as TypedDocumentString<SubscriptionItemPriceFieldsFragment, unknown>;
+export const SubscriptionItemDetailFragmentDoc = new TypedDocumentString(`
+    fragment SubscriptionItemDetail on SubscriptionItem {
+  ...SubscriptionItemFields
+  product {
+    ...ProductFields
+  }
+  prices {
+    ...SubscriptionItemPriceFields
+  }
+}
+    fragment ProductFields on Product {
+  id
+  externalId
+  name
+  price
+  currency
+  imageUrl
+  subscriptionInterval
+  customInterval
+  additionalParameters
+  projectId
+  deletedAt
+  createdAt
+}
+fragment SubscriptionItemPriceFields on SubscriptionItemPrice {
+  id
+  subscriptionItemId
+  price
+  qty
+  startsAt
+  createdAt
+}
+fragment SubscriptionItemFields on SubscriptionItem {
+  id
+  subscriptionId
+  externalId
+  externalProductId
+  productId
+  name
+  imageUrl
+  price
+  qty
+  details
+  startsAt
+  endsAt
+  isActive
+  isPaused
+  createdAt
+  updatedAt
+}`, {"fragmentName":"SubscriptionItemDetail"}) as unknown as TypedDocumentString<SubscriptionItemDetailFragment, unknown>;
+export const SubscriptionFieldsFragmentDoc = new TypedDocumentString(`
+    fragment SubscriptionFields on Subscription {
+  id
+  customerId
+  title
+  currency
+  interval
+  customInterval
+  paymentInAdvance
+  paymentMethod
+  paymentTokenId
+  firstBillingDate
+  currentBillingDate
+  lastBillingDate
+  isActive
+  webhookUrl
+  createdAt
+  updatedAt
+}
+    `, {"fragmentName":"SubscriptionFields"}) as unknown as TypedDocumentString<SubscriptionFieldsFragment, unknown>;
+export const VoucherFieldsFragmentDoc = new TypedDocumentString(`
+    fragment VoucherFields on Voucher {
+  id
+  code
+  groupId
+  generationId
+  balance
+  activeBalance
+  startBalance
+  isArchived
+  projectId
+  createdAt
+  updatedAt
+}
+    `, {"fragmentName":"VoucherFields"}) as unknown as TypedDocumentString<VoucherFieldsFragment, unknown>;
+export const VoucherGroupFieldsFragmentDoc = new TypedDocumentString(`
+    fragment VoucherGroupFields on VoucherGroup {
+  id
+  name
+  currency
+  codeLength
+  startsAt
+  endsAt
+  isActive
+  balanceSum
+  startBalanceSum
+  createdAt
+  updatedAt
+}
+    `, {"fragmentName":"VoucherGroupFields"}) as unknown as TypedDocumentString<VoucherGroupFieldsFragment, unknown>;
 export const GetOrderDocument = new TypedDocumentString(`
     query GetOrder($id: uuid!) {
   orderByPk(id: $id) {
@@ -7405,11 +7839,148 @@ export const RefundPaymentDocument = new TypedDocumentString(`
   createdAt
   updatedAt
 }`) as unknown as TypedDocumentString<RefundPaymentMutation, RefundPaymentMutationVariables>;
+export const VerifyPaywallTokenDocument = new TypedDocumentString(`
+    mutation VerifyPaywallToken($paymentToken: String!) {
+  verifyPaywallToken(paymentToken: $paymentToken) {
+    orderId
+    order {
+      ...OrderFields
+    }
+  }
+}
+    fragment OrderFields on Order {
+  id
+  status
+  merchantId
+  title
+  price
+  currency
+  currentPrice
+  paidAmount
+  refundedAmount
+  remainingAmount
+  customerId
+  projectId
+  subscriptionId
+  returnUrl
+  webhookUrl
+  metadata
+  ip
+  deadlineDate
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<VerifyPaywallTokenMutation, VerifyPaywallTokenMutationVariables>;
+export const GetProjectPaymentMethodsDocument = new TypedDocumentString(`
+    query GetProjectPaymentMethods($paymentCurrency: String!) {
+  getProjectPaymentMethod(paymentCurrency: $paymentCurrency) {
+    paymentMethodId
+    projectId
+    projectProviderId
+    providerType
+    categoryId
+    currencies
+    kycRequired
+  }
+}
+    `) as unknown as TypedDocumentString<GetProjectPaymentMethodsQuery, GetProjectPaymentMethodsQueryVariables>;
+export const GetCustomPaywallMessageDocument = new TypedDocumentString(`
+    query GetCustomPaywallMessage($paymentCurrency: String!) {
+  getCustomPaywallMessage(paymentCurrency: $paymentCurrency) {
+    type
+    message
+  }
+}
+    `) as unknown as TypedDocumentString<GetCustomPaywallMessageQuery, GetCustomPaywallMessageQueryVariables>;
+export const GetApplePaySessionDocument = new TypedDocumentString(`
+    query GetApplePaySession($input: GetApplePaySessionInput!) {
+  getApplePaySession(input: $input) {
+    session
+  }
+}
+    `) as unknown as TypedDocumentString<GetApplePaySessionQuery, GetApplePaySessionQueryVariables>;
+export const ExchangeCurrencyDocument = new TypedDocumentString(`
+    query ExchangeCurrency($amount: Int!, $from: String!, $to: String!) {
+  exchangeCurrency(amount: $amount, from: $from, to: $to) {
+    amount
+    exchangeRate
+    exchangeMargin
+    exchangeRateWithoutMargin
+  }
+}
+    `) as unknown as TypedDocumentString<ExchangeCurrencyQuery, ExchangeCurrencyQueryVariables>;
 export const PaycadooPingDocument = new TypedDocumentString(`
     query PaycadooPing {
   __typename
 }
     `) as unknown as TypedDocumentString<PaycadooPingQuery, PaycadooPingQueryVariables>;
+export const GetProductDocument = new TypedDocumentString(`
+    query GetProduct($id: uuid!) {
+  productByPk(id: $id) {
+    ...ProductFields
+  }
+}
+    fragment ProductFields on Product {
+  id
+  externalId
+  name
+  price
+  currency
+  imageUrl
+  subscriptionInterval
+  customInterval
+  additionalParameters
+  projectId
+  deletedAt
+  createdAt
+}`) as unknown as TypedDocumentString<GetProductQuery, GetProductQueryVariables>;
+export const ListProductsDocument = new TypedDocumentString(`
+    query ListProducts($externalIds: [String!], $excludeExternalIds: [String!], $notDeleted: Boolean, $and: [ProductBoolExp!]!, $limit: Int, $offset: Int, $orderBy: [ProductOrderBy!]) {
+  product(
+    where: {_and: [{externalId: {_in: $externalIds, _nin: $excludeExternalIds}}, {deletedAt: {_isNull: $notDeleted}}, {_and: $and}]}
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy
+  ) {
+    ...ProductFields
+  }
+}
+    fragment ProductFields on Product {
+  id
+  externalId
+  name
+  price
+  currency
+  imageUrl
+  subscriptionInterval
+  customInterval
+  additionalParameters
+  projectId
+  deletedAt
+  createdAt
+}`) as unknown as TypedDocumentString<ListProductsQuery, ListProductsQueryVariables>;
+export const GetProductByExternalIdDocument = new TypedDocumentString(`
+    query GetProductByExternalId($externalId: String!, $notDeleted: Boolean) {
+  product(
+    where: {_and: [{externalId: {_eq: $externalId}}, {deletedAt: {_isNull: $notDeleted}}]}
+    limit: 1
+  ) {
+    ...ProductFields
+  }
+}
+    fragment ProductFields on Product {
+  id
+  externalId
+  name
+  price
+  currency
+  imageUrl
+  subscriptionInterval
+  customInterval
+  additionalParameters
+  projectId
+  deletedAt
+  createdAt
+}`) as unknown as TypedDocumentString<GetProductByExternalIdQuery, GetProductByExternalIdQueryVariables>;
 export const GetRefundDocument = new TypedDocumentString(`
     query GetRefund($id: uuid!) {
   refundByPk(id: $id) {
@@ -7476,3 +8047,665 @@ export const ForceRefreshRefundDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<ForceRefreshRefundMutation, ForceRefreshRefundMutationVariables>;
+export const GetSubscriptionDocument = new TypedDocumentString(`
+    query GetSubscription($id: uuid!) {
+  SubscriptionByPk(id: $id) {
+    ...SubscriptionFields
+    items {
+      ...SubscriptionItemFields
+    }
+  }
+}
+    fragment SubscriptionItemFields on SubscriptionItem {
+  id
+  subscriptionId
+  externalId
+  externalProductId
+  productId
+  name
+  imageUrl
+  price
+  qty
+  details
+  startsAt
+  endsAt
+  isActive
+  isPaused
+  createdAt
+  updatedAt
+}
+fragment SubscriptionFields on Subscription {
+  id
+  customerId
+  title
+  currency
+  interval
+  customInterval
+  paymentInAdvance
+  paymentMethod
+  paymentTokenId
+  firstBillingDate
+  currentBillingDate
+  lastBillingDate
+  isActive
+  webhookUrl
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<GetSubscriptionQuery, GetSubscriptionQueryVariables>;
+export const ListSubscriptionsDocument = new TypedDocumentString(`
+    query ListSubscriptions($where: SubscriptionBoolExp, $limit: Int, $offset: Int, $orderBy: [SubscriptionOrderBy!]) {
+  Subscription(where: $where, limit: $limit, offset: $offset, orderBy: $orderBy) {
+    ...SubscriptionFields
+  }
+}
+    fragment SubscriptionFields on Subscription {
+  id
+  customerId
+  title
+  currency
+  interval
+  customInterval
+  paymentInAdvance
+  paymentMethod
+  paymentTokenId
+  firstBillingDate
+  currentBillingDate
+  lastBillingDate
+  isActive
+  webhookUrl
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<ListSubscriptionsQuery, ListSubscriptionsQueryVariables>;
+export const GetSubscriptionUrlDocument = new TypedDocumentString(`
+    query GetSubscriptionUrl($subscriptionId: uuid!, $returnUrl: String) {
+  generateSubscriptionUrl(subscriptionId: $subscriptionId, returnUrl: $returnUrl) {
+    url
+  }
+}
+    `) as unknown as TypedDocumentString<GetSubscriptionUrlQuery, GetSubscriptionUrlQueryVariables>;
+export const CalculateSubscriptionPriceDocument = new TypedDocumentString(`
+    query CalculateSubscriptionPrice($input: CalculateSubscriptionPriceInput!) {
+  calculateSubscriptionPrice(input: $input) {
+    sum
+    items {
+      id
+      price
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<CalculateSubscriptionPriceQuery, CalculateSubscriptionPriceQueryVariables>;
+export const CreateSubscriptionDocument = new TypedDocumentString(`
+    mutation CreateSubscription($object: SubscriptionInsertInput!) {
+  insertSubscriptionOne(object: $object) {
+    ...SubscriptionFields
+  }
+}
+    fragment SubscriptionFields on Subscription {
+  id
+  customerId
+  title
+  currency
+  interval
+  customInterval
+  paymentInAdvance
+  paymentMethod
+  paymentTokenId
+  firstBillingDate
+  currentBillingDate
+  lastBillingDate
+  isActive
+  webhookUrl
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<CreateSubscriptionMutation, CreateSubscriptionMutationVariables>;
+export const GetSubscriptionItemDocument = new TypedDocumentString(`
+    query GetSubscriptionItem($id: uuid!) {
+  subscriptionItemByPk(id: $id) {
+    ...SubscriptionItemDetail
+  }
+}
+    fragment ProductFields on Product {
+  id
+  externalId
+  name
+  price
+  currency
+  imageUrl
+  subscriptionInterval
+  customInterval
+  additionalParameters
+  projectId
+  deletedAt
+  createdAt
+}
+fragment SubscriptionItemPriceFields on SubscriptionItemPrice {
+  id
+  subscriptionItemId
+  price
+  qty
+  startsAt
+  createdAt
+}
+fragment SubscriptionItemFields on SubscriptionItem {
+  id
+  subscriptionId
+  externalId
+  externalProductId
+  productId
+  name
+  imageUrl
+  price
+  qty
+  details
+  startsAt
+  endsAt
+  isActive
+  isPaused
+  createdAt
+  updatedAt
+}
+fragment SubscriptionItemDetail on SubscriptionItem {
+  ...SubscriptionItemFields
+  product {
+    ...ProductFields
+  }
+  prices {
+    ...SubscriptionItemPriceFields
+  }
+}`) as unknown as TypedDocumentString<GetSubscriptionItemQuery, GetSubscriptionItemQueryVariables>;
+export const ListSubscriptionItemsDocument = new TypedDocumentString(`
+    query ListSubscriptionItems($where: SubscriptionItemBoolExp, $limit: Int, $offset: Int, $orderBy: [SubscriptionItemOrderBy!]) {
+  subscriptionItem(
+    where: $where
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy
+  ) {
+    ...SubscriptionItemFields
+  }
+}
+    fragment SubscriptionItemFields on SubscriptionItem {
+  id
+  subscriptionId
+  externalId
+  externalProductId
+  productId
+  name
+  imageUrl
+  price
+  qty
+  details
+  startsAt
+  endsAt
+  isActive
+  isPaused
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<ListSubscriptionItemsQuery, ListSubscriptionItemsQueryVariables>;
+export const FindActiveSubscriptionItemDocument = new TypedDocumentString(`
+    query FindActiveSubscriptionItem($and: [SubscriptionItemBoolExp!]!) {
+  subscriptionItem(
+    where: {_and: [{startsAt: {_lt: "now()"}}, {_or: [{endsAt: {_isNull: true}}, {endsAt: {_gt: "now()"}}]}, {_and: $and}]}
+    orderBy: {startsAt: DESC}
+    limit: 1
+  ) {
+    ...SubscriptionItemDetail
+    pauses(where: {startsAt: {_gt: "now()"}}, orderBy: {startsAt: ASC}) {
+      ...SubscriptionItemPauseFields
+    }
+  }
+}
+    fragment ProductFields on Product {
+  id
+  externalId
+  name
+  price
+  currency
+  imageUrl
+  subscriptionInterval
+  customInterval
+  additionalParameters
+  projectId
+  deletedAt
+  createdAt
+}
+fragment SubscriptionItemPauseFields on SubscriptionItemPause {
+  id
+  subscriptionItemId
+  startsAt
+  endsAt
+  createdAt
+}
+fragment SubscriptionItemPriceFields on SubscriptionItemPrice {
+  id
+  subscriptionItemId
+  price
+  qty
+  startsAt
+  createdAt
+}
+fragment SubscriptionItemFields on SubscriptionItem {
+  id
+  subscriptionId
+  externalId
+  externalProductId
+  productId
+  name
+  imageUrl
+  price
+  qty
+  details
+  startsAt
+  endsAt
+  isActive
+  isPaused
+  createdAt
+  updatedAt
+}
+fragment SubscriptionItemDetail on SubscriptionItem {
+  ...SubscriptionItemFields
+  product {
+    ...ProductFields
+  }
+  prices {
+    ...SubscriptionItemPriceFields
+  }
+}`) as unknown as TypedDocumentString<FindActiveSubscriptionItemQuery, FindActiveSubscriptionItemQueryVariables>;
+export const FindScheduledSubscriptionItemDocument = new TypedDocumentString(`
+    query FindScheduledSubscriptionItem($and: [SubscriptionItemBoolExp!]!) {
+  subscriptionItem(
+    where: {_and: [{startsAt: {_gt: "now()"}}, {_or: [{endsAt: {_isNull: true}}, {endsAt: {_gt: "now()"}}]}, {_and: $and}]}
+    orderBy: {startsAt: ASC}
+    limit: 1
+  ) {
+    ...SubscriptionItemDetail
+    pauses(where: {startsAt: {_gt: "now()"}}, orderBy: {startsAt: ASC}) {
+      ...SubscriptionItemPauseFields
+    }
+  }
+}
+    fragment ProductFields on Product {
+  id
+  externalId
+  name
+  price
+  currency
+  imageUrl
+  subscriptionInterval
+  customInterval
+  additionalParameters
+  projectId
+  deletedAt
+  createdAt
+}
+fragment SubscriptionItemPauseFields on SubscriptionItemPause {
+  id
+  subscriptionItemId
+  startsAt
+  endsAt
+  createdAt
+}
+fragment SubscriptionItemPriceFields on SubscriptionItemPrice {
+  id
+  subscriptionItemId
+  price
+  qty
+  startsAt
+  createdAt
+}
+fragment SubscriptionItemFields on SubscriptionItem {
+  id
+  subscriptionId
+  externalId
+  externalProductId
+  productId
+  name
+  imageUrl
+  price
+  qty
+  details
+  startsAt
+  endsAt
+  isActive
+  isPaused
+  createdAt
+  updatedAt
+}
+fragment SubscriptionItemDetail on SubscriptionItem {
+  ...SubscriptionItemFields
+  product {
+    ...ProductFields
+  }
+  prices {
+    ...SubscriptionItemPriceFields
+  }
+}`) as unknown as TypedDocumentString<FindScheduledSubscriptionItemQuery, FindScheduledSubscriptionItemQueryVariables>;
+export const InsertSubscriptionItemDocument = new TypedDocumentString(`
+    mutation InsertSubscriptionItem($object: SubscriptionItemInsertInput!) {
+  insertSubscriptionItemOne(object: $object) {
+    ...SubscriptionItemDetail
+  }
+}
+    fragment ProductFields on Product {
+  id
+  externalId
+  name
+  price
+  currency
+  imageUrl
+  subscriptionInterval
+  customInterval
+  additionalParameters
+  projectId
+  deletedAt
+  createdAt
+}
+fragment SubscriptionItemPriceFields on SubscriptionItemPrice {
+  id
+  subscriptionItemId
+  price
+  qty
+  startsAt
+  createdAt
+}
+fragment SubscriptionItemFields on SubscriptionItem {
+  id
+  subscriptionId
+  externalId
+  externalProductId
+  productId
+  name
+  imageUrl
+  price
+  qty
+  details
+  startsAt
+  endsAt
+  isActive
+  isPaused
+  createdAt
+  updatedAt
+}
+fragment SubscriptionItemDetail on SubscriptionItem {
+  ...SubscriptionItemFields
+  product {
+    ...ProductFields
+  }
+  prices {
+    ...SubscriptionItemPriceFields
+  }
+}`) as unknown as TypedDocumentString<InsertSubscriptionItemMutation, InsertSubscriptionItemMutationVariables>;
+export const SetSubscriptionItemEndsAtDocument = new TypedDocumentString(`
+    mutation SetSubscriptionItemEndsAt($id: uuid!, $endsAt: timestamptz) {
+  updateSubscriptionItemByPk(pkColumns: {id: $id}, _set: {endsAt: $endsAt}) {
+    ...SubscriptionItemDetail
+  }
+}
+    fragment ProductFields on Product {
+  id
+  externalId
+  name
+  price
+  currency
+  imageUrl
+  subscriptionInterval
+  customInterval
+  additionalParameters
+  projectId
+  deletedAt
+  createdAt
+}
+fragment SubscriptionItemPriceFields on SubscriptionItemPrice {
+  id
+  subscriptionItemId
+  price
+  qty
+  startsAt
+  createdAt
+}
+fragment SubscriptionItemFields on SubscriptionItem {
+  id
+  subscriptionId
+  externalId
+  externalProductId
+  productId
+  name
+  imageUrl
+  price
+  qty
+  details
+  startsAt
+  endsAt
+  isActive
+  isPaused
+  createdAt
+  updatedAt
+}
+fragment SubscriptionItemDetail on SubscriptionItem {
+  ...SubscriptionItemFields
+  product {
+    ...ProductFields
+  }
+  prices {
+    ...SubscriptionItemPriceFields
+  }
+}`) as unknown as TypedDocumentString<SetSubscriptionItemEndsAtMutation, SetSubscriptionItemEndsAtMutationVariables>;
+export const EndSubscriptionItemsDocument = new TypedDocumentString(`
+    mutation EndSubscriptionItems($where: SubscriptionItemBoolExp!, $endsAt: timestamptz = "now()") {
+  updateSubscriptionItem(where: $where, _set: {endsAt: $endsAt}) {
+    affectedRows
+  }
+}
+    `) as unknown as TypedDocumentString<EndSubscriptionItemsMutation, EndSubscriptionItemsMutationVariables>;
+export const EditSubscriptionItemDocument = new TypedDocumentString(`
+    mutation EditSubscriptionItem($id: uuid!, $input: UpdateSubscriptionItemSubscriptionitemsetinput!) {
+  editSubscriptionItem(id: $id, input: $input) {
+    id
+  }
+}
+    `) as unknown as TypedDocumentString<EditSubscriptionItemMutation, EditSubscriptionItemMutationVariables>;
+export const UpdateSubscriptionItemPricesByProductDocument = new TypedDocumentString(`
+    mutation UpdateSubscriptionItemPricesByProduct($productId: String!, $price: Int!, $startsAt: timestamp!) {
+  updateSubscriptionItemPricesByProductId(
+    productId: $productId
+    price: $price
+    startsAt: $startsAt
+  ) {
+    ids
+  }
+}
+    `) as unknown as TypedDocumentString<UpdateSubscriptionItemPricesByProductMutation, UpdateSubscriptionItemPricesByProductMutationVariables>;
+export const ListSubscriptionItemPausesDocument = new TypedDocumentString(`
+    query ListSubscriptionItemPauses($where: SubscriptionItemPauseBoolExp, $limit: Int, $offset: Int, $orderBy: [SubscriptionItemPauseOrderBy!]) {
+  subscriptionItemPause(
+    where: $where
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy
+  ) {
+    ...SubscriptionItemPauseFields
+  }
+}
+    fragment SubscriptionItemPauseFields on SubscriptionItemPause {
+  id
+  subscriptionItemId
+  startsAt
+  endsAt
+  createdAt
+}`) as unknown as TypedDocumentString<ListSubscriptionItemPausesQuery, ListSubscriptionItemPausesQueryVariables>;
+export const InsertSubscriptionItemPauseDocument = new TypedDocumentString(`
+    mutation InsertSubscriptionItemPause($object: SubscriptionItemPauseInsertInput!) {
+  insertSubscriptionItemPauseOne(object: $object) {
+    ...SubscriptionItemPauseFields
+  }
+}
+    fragment SubscriptionItemPauseFields on SubscriptionItemPause {
+  id
+  subscriptionItemId
+  startsAt
+  endsAt
+  createdAt
+}`) as unknown as TypedDocumentString<InsertSubscriptionItemPauseMutation, InsertSubscriptionItemPauseMutationVariables>;
+export const DeleteSubscriptionItemPauseDocument = new TypedDocumentString(`
+    mutation DeleteSubscriptionItemPause($id: uuid!) {
+  deleteSubscriptionItemPauseByPk(id: $id) {
+    ...SubscriptionItemPauseFields
+  }
+}
+    fragment SubscriptionItemPauseFields on SubscriptionItemPause {
+  id
+  subscriptionItemId
+  startsAt
+  endsAt
+  createdAt
+}`) as unknown as TypedDocumentString<DeleteSubscriptionItemPauseMutation, DeleteSubscriptionItemPauseMutationVariables>;
+export const GetVoucherByCodeDocument = new TypedDocumentString(`
+    query GetVoucherByCode($code: String!) {
+  voucherByCode(code: $code) {
+    id
+    code
+    currency
+    balance
+    activeBalance
+  }
+}
+    `) as unknown as TypedDocumentString<GetVoucherByCodeQuery, GetVoucherByCodeQueryVariables>;
+export const GetVoucherDocument = new TypedDocumentString(`
+    query GetVoucher($id: uuid!) {
+  voucherByPk(id: $id) {
+    ...VoucherFields
+  }
+}
+    fragment VoucherFields on Voucher {
+  id
+  code
+  groupId
+  generationId
+  balance
+  activeBalance
+  startBalance
+  isArchived
+  projectId
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<GetVoucherQuery, GetVoucherQueryVariables>;
+export const ListVouchersDocument = new TypedDocumentString(`
+    query ListVouchers($where: VoucherBoolExp, $limit: Int, $offset: Int, $orderBy: [VoucherOrderBy!]) {
+  voucher(where: $where, limit: $limit, offset: $offset, orderBy: $orderBy) {
+    ...VoucherFields
+  }
+}
+    fragment VoucherFields on Voucher {
+  id
+  code
+  groupId
+  generationId
+  balance
+  activeBalance
+  startBalance
+  isArchived
+  projectId
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<ListVouchersQuery, ListVouchersQueryVariables>;
+export const GenerateVoucherDocument = new TypedDocumentString(`
+    mutation GenerateVoucher($input: GenerateOneVoucherInput!) {
+  generateVoucher(input: $input) {
+    voucherId
+    voucher {
+      ...VoucherFields
+    }
+  }
+}
+    fragment VoucherFields on Voucher {
+  id
+  code
+  groupId
+  generationId
+  balance
+  activeBalance
+  startBalance
+  isArchived
+  projectId
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<GenerateVoucherMutation, GenerateVoucherMutationVariables>;
+export const GenerateVouchersDocument = new TypedDocumentString(`
+    mutation GenerateVouchers($groupId: uuid!, $count: Int!, $startBalance: Int!) {
+  generateVouchers(groupId: $groupId, count: $count, startBalance: $startBalance) {
+    generationId
+    vouchers {
+      ...VoucherFields
+    }
+  }
+}
+    fragment VoucherFields on Voucher {
+  id
+  code
+  groupId
+  generationId
+  balance
+  activeBalance
+  startBalance
+  isArchived
+  projectId
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<GenerateVouchersMutation, GenerateVouchersMutationVariables>;
+export const GetVoucherGroupDocument = new TypedDocumentString(`
+    query GetVoucherGroup($id: uuid!) {
+  voucherGroupByPk(id: $id) {
+    ...VoucherGroupFields
+  }
+}
+    fragment VoucherGroupFields on VoucherGroup {
+  id
+  name
+  currency
+  codeLength
+  startsAt
+  endsAt
+  isActive
+  balanceSum
+  startBalanceSum
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<GetVoucherGroupQuery, GetVoucherGroupQueryVariables>;
+export const ListVoucherGroupsDocument = new TypedDocumentString(`
+    query ListVoucherGroups($where: VoucherGroupBoolExp, $limit: Int, $offset: Int, $orderBy: [VoucherGroupOrderBy!]) {
+  voucherGroup(where: $where, limit: $limit, offset: $offset, orderBy: $orderBy) {
+    ...VoucherGroupFields
+  }
+}
+    fragment VoucherGroupFields on VoucherGroup {
+  id
+  name
+  currency
+  codeLength
+  startsAt
+  endsAt
+  isActive
+  balanceSum
+  startBalanceSum
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<ListVoucherGroupsQuery, ListVoucherGroupsQueryVariables>;
+export const CreateVoucherGroupDocument = new TypedDocumentString(`
+    mutation CreateVoucherGroup($object: VoucherGroupInsertInput!) {
+  insertVoucherGroupOne(object: $object) {
+    ...VoucherGroupFields
+  }
+}
+    fragment VoucherGroupFields on VoucherGroup {
+  id
+  name
+  currency
+  codeLength
+  startsAt
+  endsAt
+  isActive
+  balanceSum
+  startBalanceSum
+  createdAt
+  updatedAt
+}`) as unknown as TypedDocumentString<CreateVoucherGroupMutation, CreateVoucherGroupMutationVariables>;

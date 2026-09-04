@@ -47,7 +47,39 @@ export type {
   ListPaymentsOptions,
   PaymentsResource,
 } from "./resources/payments.js";
+export type {
+  CurrencyExchange,
+  CustomPaywallMessage,
+  ExchangeResource,
+  PaywallResource,
+  PaywallToken,
+  ProjectPaymentMethod,
+} from "./resources/paywall.js";
+export type {
+  ListAllProductsOptions,
+  ListProductsOptions,
+  ProductFilter,
+  ProductsResource,
+} from "./resources/products.js";
 export type { ListRefundsOptions, RefundsResource } from "./resources/refunds.js";
+export type {
+  FindSubscriptionItemOptions,
+  ListAllSubscriptionItemsOptions,
+  ListPausesOptions,
+  ListSubscriptionItemsOptions,
+  ListSubscriptionsOptions,
+  SubscriptionDetail,
+  SubscriptionItemDetail,
+  SubscriptionItemWithPauses,
+  SubscriptionPrice,
+  SubscriptionsResource,
+} from "./resources/subscriptions.js";
+export type {
+  ListVoucherGroupsOptions,
+  ListVouchersOptions,
+  VoucherBalance,
+  VouchersResource,
+} from "./resources/vouchers.js";
 export type { ListAllOptions, ListOptions } from "./resources/shared.js";
 
 export { collect, paginate } from "./pagination.js";

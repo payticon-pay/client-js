@@ -91,3 +91,111 @@ fragment OrderDetail on Order {
     ...PaymentWithRefunds
   }
 }
+
+fragment ProductFields on Product {
+  id
+  externalId
+  name
+  price
+  currency
+  imageUrl
+  subscriptionInterval
+  customInterval
+  additionalParameters
+  projectId
+  deletedAt
+  createdAt
+}
+
+fragment SubscriptionItemPauseFields on SubscriptionItemPause {
+  id
+  subscriptionItemId
+  startsAt
+  endsAt
+  createdAt
+}
+
+fragment SubscriptionItemPriceFields on SubscriptionItemPrice {
+  id
+  subscriptionItemId
+  price
+  qty
+  startsAt
+  createdAt
+}
+
+fragment SubscriptionItemFields on SubscriptionItem {
+  id
+  subscriptionId
+  externalId
+  externalProductId
+  productId
+  name
+  imageUrl
+  price
+  qty
+  details
+  startsAt
+  endsAt
+  isActive
+  isPaused
+  createdAt
+  updatedAt
+}
+
+fragment SubscriptionItemDetail on SubscriptionItem {
+  ...SubscriptionItemFields
+  product {
+    ...ProductFields
+  }
+  prices {
+    ...SubscriptionItemPriceFields
+  }
+}
+
+fragment SubscriptionFields on Subscription {
+  id
+  customerId
+  title
+  currency
+  interval
+  customInterval
+  paymentInAdvance
+  paymentMethod
+  paymentTokenId
+  firstBillingDate
+  currentBillingDate
+  lastBillingDate
+  isActive
+  webhookUrl
+  createdAt
+  updatedAt
+}
+
+fragment VoucherFields on Voucher {
+  id
+  code
+  groupId
+  generationId
+  balance
+  activeBalance
+  startBalance
+  isArchived
+  projectId
+  createdAt
+  updatedAt
+}
+
+fragment VoucherGroupFields on VoucherGroup {
+  id
+  name
+  currency
+  codeLength
+  startsAt
+  endsAt
+  isActive
+  balanceSum
+  startBalanceSum
+  createdAt
+  updatedAt
+}

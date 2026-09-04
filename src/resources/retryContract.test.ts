@@ -33,12 +33,33 @@ describe("retry contract over the real transport", () => {
       c.payments.createManual({ orderId: ORDER_ID } as never)],
     ["payments.refund", (c: ReturnType<typeof createPaycadooClient>) =>
       c.payments.refund({ paymentId: PAYMENT_ID } as never)],
+    ["subscriptions.create", (c: ReturnType<typeof createPaycadooClient>) =>
+      c.subscriptions.create({} as never)],
+    ["subscriptions.items.insert", (c: ReturnType<typeof createPaycadooClient>) =>
+      c.subscriptions.items.insert({} as never)],
+    ["vouchers.generateOne", (c: ReturnType<typeof createPaycadooClient>) =>
+      c.vouchers.generateOne({ groupId: "g1", startBalance: 100 })],
+    ["vouchers.generateMany", (c: ReturnType<typeof createPaycadooClient>) =>
+      c.vouchers.generateMany({ groupId: "g1", count: 10, startBalance: 100 })],
   ])("should make exactly one HTTP attempt for %s on a 500", async (_name, call) => {
     const { client, stub } = clientOver500();
 
     await call(client).catch(() => undefined);
 
     expect(stub.calls).toHaveLength(1);
+  });
+
+  it.each([
+    ["subscriptions.items.setEndsAt", (c: ReturnType<typeof createPaycadooClient>) =>
+      c.subscriptions.items.setEndsAt("i1", null)],
+    ["subscriptions.items.endMany", (c: ReturnType<typeof createPaycadooClient>) =>
+      c.subscriptions.items.endMany({} as never)],
+  ])("should allow retrying %s, which only writes a date", async (_name, call) => {
+    const { client, stub } = clientOver500();
+
+    await call(client).catch(() => undefined);
+
+    expect(stub.calls).toHaveLength(3);
   });
 
   it("should retry a read three times on a 500", async () => {

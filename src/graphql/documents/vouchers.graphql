@@ -1,0 +1,76 @@
+query GetVoucherByCode($code: String!) {
+  voucherByCode(code: $code) {
+    id
+    code
+    currency
+    balance
+    activeBalance
+  }
+}
+
+query GetVoucher($id: uuid!) {
+  voucherByPk(id: $id) {
+    ...VoucherFields
+  }
+}
+
+query ListVouchers(
+  $where: VoucherBoolExp
+  $limit: Int
+  $offset: Int
+  $orderBy: [VoucherOrderBy!]
+) {
+  voucher(where: $where, limit: $limit, offset: $offset, orderBy: $orderBy) {
+    ...VoucherFields
+  }
+}
+
+mutation GenerateVoucher($input: GenerateOneVoucherInput!) {
+  generateVoucher(input: $input) {
+    voucherId
+    voucher {
+      ...VoucherFields
+    }
+  }
+}
+
+mutation GenerateVouchers($groupId: uuid!, $count: Int!, $startBalance: Int!) {
+  generateVouchers(
+    groupId: $groupId
+    count: $count
+    startBalance: $startBalance
+  ) {
+    generationId
+    vouchers {
+      ...VoucherFields
+    }
+  }
+}
+
+query GetVoucherGroup($id: uuid!) {
+  voucherGroupByPk(id: $id) {
+    ...VoucherGroupFields
+  }
+}
+
+query ListVoucherGroups(
+  $where: VoucherGroupBoolExp
+  $limit: Int
+  $offset: Int
+  $orderBy: [VoucherGroupOrderBy!]
+) {
+  voucherGroup(
+    where: $where
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy
+  ) {
+    ...VoucherGroupFields
+  }
+}
+
+mutation CreateVoucherGroup($object: VoucherGroupInsertInput!) {
+  insertVoucherGroupOne(object: $object) {
+    ...VoucherGroupFields
+  }
+}

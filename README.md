@@ -188,6 +188,121 @@ if (typeof parameters === "object" && parameters !== null && "blikCodeRequired" 
 Every amount is an integer in the currency's minor unit — `12_900` is 129.00 PLN. There are no
 decimals anywhere in this API, and none in this package.
 
+## Subscriptions
+
+```ts
+const subscription = await paycadoo.subscriptions.create({
+  customerId: user.id,
+  currency: "PLN",
+  interval: SubscriptionIntervalEnum.MONTH,
+  paymentInAdvance: true,
+  paymentMethod: "card",
+  firstBillingDate: "2026-10-01T00:00:00Z",
+  items: { data: [{ externalId: device.id, name: "Terminal", prices: { data: [{ price: 4_900, qty: 1, startsAt: "2026-10-01T00:00:00Z" }] } }] },
+});
+
+const { url } = { url: await paycadoo.subscriptions.url(subscription!.id, returnUrl) };
+```
+
+| Method | Description |
+|---|---|
+| `subscriptions.get(id, options?)` | One subscription with its items; `null` when absent |
+| `subscriptions.list(options?)` | One page — `where`, `orderBy`, `limit`, `offset` |
+| `subscriptions.create(object, options?)` | Creates one, customer and items nested. **Never retried** |
+| `subscriptions.url(id, returnUrl?, options?)` | Hosted page for setting up the payment method |
+| `subscriptions.calculatePrice(input, options?)` | `{ sum, items }` for a prospective billing |
+
+`calculatePrice` returns the **per-item breakdown alongside the sum**. The sum alone cannot tell you
+which item moved, which is exactly the question you have when a bill changes.
+
+### Subscription items
+
+| Method | Description |
+|---|---|
+| `items.get(id, options?)` | One item with product and prices; `null` when absent |
+| `items.list(options?)` / `items.listAll(options?)` | One page / every page |
+| `items.findActive(options?)` | The item running now, with its future pauses; `null` when none |
+| `items.findScheduled(options?)` | The item that has not started yet; `null` when none |
+| `items.insert(object, options?)` | Adds an item, prices nested. **Never retried** |
+| `items.setEndsAt(id, endsAt, options?)` | Sets one item's end date. Retryable |
+| `items.endMany(where, endsAt?, options?)` | Ends every matching item; returns rows changed. Retryable |
+| `items.edit(id, input, options?)` | Renames / reprices one item. **Never retried** |
+| `items.updatePricesByProduct(input, options?)` | Reprices every item of one product from a date |
+| `items.pauses.list / insert / delete` | Pause windows on an item |
+
+**`endMany` ends items; it does not delete them.** It is an `UPDATE` of `endsAt`, so past billing
+keeps its history:
+
+```ts
+const ended = await paycadoo.subscriptions.items.endMany({
+  externalId: { _eq: device.id },
+  endsAt: { _isNull: true },
+}); // → number of rows changed
+```
+
+Called without a date it leaves `endsAt` to the document's own `"now()"` literal, which **Postgres**
+evaluates. The same literal drives `findActive` and `findScheduled`. That is deliberate: a consumer
+with a skewed clock can never disagree with the server about whether a subscription is running.
+
+> `"now()"` is a Hasura-ism and will not survive the move off Hasura. When that lands, these four
+> operations need a server-side clock again — not a `new Date()` on the client.
+
+`findActive` and `findScheduled` take your own key plus an optional extra filter, and the filter is
+closed **last** so the SDK's date conditions can never be widened by it:
+
+```ts
+const item = await paycadoo.subscriptions.items.findActive({
+  externalId: device.id,
+  where: { externalProductId: { _neq: "gsm" } }, // your policy, not Paycadoo's
+});
+```
+
+Business rules like that belong to you. The SDK gives you the filter arguments; the constants stay in
+your own code.
+
+## Products
+
+| Method | Description |
+|---|---|
+| `products.get(id, options?)` | One product; `null` when absent |
+| `products.getByExternalId(externalId, options?)` | Lookup by your own key; `null` when absent |
+| `products.list(options?)` / `products.listAll(options?)` | One page / every page |
+
+```ts
+const products = await paycadoo.products.list({
+  externalIds: ["0", "1", "2", "3"],      // keep only these
+  excludeExternalIds: ["gsm"],            // drop these
+  includeDeleted: false,                  // the default
+  where: { currency: { _eq: "PLN" } },     // closed last
+});
+```
+
+Soft-deleted products are filtered out unless you ask for them.
+
+## Vouchers
+
+| Method | Description |
+|---|---|
+| `vouchers.getByCode(code, options?)` | Balance behind a code; `null` when unknown |
+| `vouchers.get(id, options?)` | One voucher; `null` when absent |
+| `vouchers.list(options?)` | One page — `where`, `orderBy`, `limit`, `offset` |
+| `vouchers.generateOne(input, options?)` | Mints one voucher. **Never retried** |
+| `vouchers.generateMany(input, options?)` | Mints a batch. **Never retried** |
+| `vouchers.groups.get / list / create` | Voucher groups |
+
+Generation is never retried: each call mints balance that is real money, and a repeat after a timeout
+mints vouchers nobody asked for.
+
+## Paywall
+
+| Method | Description |
+|---|---|
+| `paywall.verifyToken(token, options?)` | Exchanges a paywall token for its order |
+| `paywall.paymentMethods(currency, options?)` | Methods available to the project |
+| `paywall.customMessage(currency, options?)` | Project's custom paywall message; `null` when none |
+| `paywall.applePaySession(input, options?)` | Apple's merchant-validation payload, typed `unknown` |
+| `exchange.currency(input, options?)` | Converts an amount with the project's margin applied |
+
 ## `raw()`
 
 Everything this package does not wrap is still reachable, with types:

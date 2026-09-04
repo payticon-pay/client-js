@@ -1,0 +1,48 @@
+query GetProduct($id: uuid!) {
+  productByPk(id: $id) {
+    ...ProductFields
+  }
+}
+
+# `externalIds`, `excludeExternalIds` and `notDeleted` are all nullable on
+# purpose: Hasura drops a null comparison from the filter, so omitting one
+# removes that condition instead of matching nothing. The caller's own `where`
+# is closed last, so it can never be widened by the defaults above it.
+query ListProducts(
+  $externalIds: [String!]
+  $excludeExternalIds: [String!]
+  $notDeleted: Boolean
+  $and: [ProductBoolExp!]!
+  $limit: Int
+  $offset: Int
+  $orderBy: [ProductOrderBy!]
+) {
+  product(
+    where: {
+      _and: [
+        { externalId: { _in: $externalIds, _nin: $excludeExternalIds } }
+        { deletedAt: { _isNull: $notDeleted } }
+        { _and: $and }
+      ]
+    }
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy
+  ) {
+    ...ProductFields
+  }
+}
+
+query GetProductByExternalId($externalId: String!, $notDeleted: Boolean) {
+  product(
+    where: {
+      _and: [
+        { externalId: { _eq: $externalId } }
+        { deletedAt: { _isNull: $notDeleted } }
+      ]
+    }
+    limit: 1
+  ) {
+    ...ProductFields
+  }
+}

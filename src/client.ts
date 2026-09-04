@@ -1,7 +1,19 @@
 import { PaycadooPingDocument } from "./generated/graphql.js";
 import { createOrdersResource, type OrdersResource } from "./resources/orders.js";
+import {
+  createExchangeResource,
+  createPaywallResource,
+  type ExchangeResource,
+  type PaywallResource,
+} from "./resources/paywall.js";
 import { createPaymentsResource, type PaymentsResource } from "./resources/payments.js";
+import { createProductsResource, type ProductsResource } from "./resources/products.js";
 import { createRefundsResource, type RefundsResource } from "./resources/refunds.js";
+import {
+  createSubscriptionsResource,
+  type SubscriptionsResource,
+} from "./resources/subscriptions.js";
+import { createVouchersResource, type VouchersResource } from "./resources/vouchers.js";
 import { createExecutor } from "./transport/execute.js";
 import type { TypedDocumentString } from "./graphql/TypedDocumentString.js";
 import type {
@@ -14,6 +26,11 @@ export interface PaycadooClient {
   readonly orders: OrdersResource;
   readonly payments: PaymentsResource;
   readonly refunds: RefundsResource;
+  readonly subscriptions: SubscriptionsResource;
+  readonly products: ProductsResource;
+  readonly vouchers: VouchersResource;
+  readonly paywall: PaywallResource;
+  readonly exchange: ExchangeResource;
 
   /**
    * Executes any GraphQL document against Paycadoo.
@@ -53,6 +70,11 @@ export const createPaycadooClient = (
     orders: createOrdersResource(execute),
     payments: createPaymentsResource(execute),
     refunds: createRefundsResource(execute),
+    subscriptions: createSubscriptionsResource(execute),
+    products: createProductsResource(execute),
+    vouchers: createVouchersResource(execute),
+    paywall: createPaywallResource(execute),
+    exchange: createExchangeResource(execute),
     raw: execute as PaycadooClient["raw"],
     ping: async (options?: RequestOptions) => {
       await execute(PaycadooPingDocument, undefined, options);

@@ -1,0 +1,178 @@
+query GetSubscription($id: uuid!) {
+  SubscriptionByPk(id: $id) {
+    ...SubscriptionFields
+    items {
+      ...SubscriptionItemFields
+    }
+  }
+}
+
+query ListSubscriptions(
+  $where: SubscriptionBoolExp
+  $limit: Int
+  $offset: Int
+  $orderBy: [SubscriptionOrderBy!]
+) {
+  Subscription(where: $where, limit: $limit, offset: $offset, orderBy: $orderBy) {
+    ...SubscriptionFields
+  }
+}
+
+query GetSubscriptionUrl($subscriptionId: uuid!, $returnUrl: String) {
+  generateSubscriptionUrl(subscriptionId: $subscriptionId, returnUrl: $returnUrl) {
+    url
+  }
+}
+
+query CalculateSubscriptionPrice($input: CalculateSubscriptionPriceInput!) {
+  calculateSubscriptionPrice(input: $input) {
+    sum
+    items {
+      id
+      price
+    }
+  }
+}
+
+mutation CreateSubscription($object: SubscriptionInsertInput!) {
+  insertSubscriptionOne(object: $object) {
+    ...SubscriptionFields
+  }
+}
+
+query GetSubscriptionItem($id: uuid!) {
+  subscriptionItemByPk(id: $id) {
+    ...SubscriptionItemDetail
+  }
+}
+
+query ListSubscriptionItems(
+  $where: SubscriptionItemBoolExp
+  $limit: Int
+  $offset: Int
+  $orderBy: [SubscriptionItemOrderBy!]
+) {
+  subscriptionItem(
+    where: $where
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy
+  ) {
+    ...SubscriptionItemFields
+  }
+}
+
+# `"now()"` is evaluated by Postgres, so "active" means active on the server's
+# clock rather than on the caller's. The caller's own filter is closed last.
+query FindActiveSubscriptionItem($and: [SubscriptionItemBoolExp!]!) {
+  subscriptionItem(
+    where: {
+      _and: [
+        { startsAt: { _lt: "now()" } }
+        { _or: [{ endsAt: { _isNull: true } }, { endsAt: { _gt: "now()" } }] }
+        { _and: $and }
+      ]
+    }
+    orderBy: { startsAt: DESC }
+    limit: 1
+  ) {
+    ...SubscriptionItemDetail
+    pauses(where: { startsAt: { _gt: "now()" } }, orderBy: { startsAt: ASC }) {
+      ...SubscriptionItemPauseFields
+    }
+  }
+}
+
+query FindScheduledSubscriptionItem($and: [SubscriptionItemBoolExp!]!) {
+  subscriptionItem(
+    where: {
+      _and: [
+        { startsAt: { _gt: "now()" } }
+        { _or: [{ endsAt: { _isNull: true } }, { endsAt: { _gt: "now()" } }] }
+        { _and: $and }
+      ]
+    }
+    orderBy: { startsAt: ASC }
+    limit: 1
+  ) {
+    ...SubscriptionItemDetail
+    pauses(where: { startsAt: { _gt: "now()" } }, orderBy: { startsAt: ASC }) {
+      ...SubscriptionItemPauseFields
+    }
+  }
+}
+
+mutation InsertSubscriptionItem($object: SubscriptionItemInsertInput!) {
+  insertSubscriptionItemOne(object: $object) {
+    ...SubscriptionItemDetail
+  }
+}
+
+mutation SetSubscriptionItemEndsAt($id: uuid!, $endsAt: timestamptz) {
+  updateSubscriptionItemByPk(pkColumns: { id: $id }, _set: { endsAt: $endsAt }) {
+    ...SubscriptionItemDetail
+  }
+}
+
+# Ending an item is an UPDATE of `endsAt`, never a DELETE. The default is the
+# literal `"now()"`, evaluated by Postgres — the caller's clock never decides
+# when a subscription stopped.
+mutation EndSubscriptionItems(
+  $where: SubscriptionItemBoolExp!
+  $endsAt: timestamptz = "now()"
+) {
+  updateSubscriptionItem(where: $where, _set: { endsAt: $endsAt }) {
+    affectedRows
+  }
+}
+
+mutation EditSubscriptionItem(
+  $id: uuid!
+  $input: UpdateSubscriptionItemSubscriptionitemsetinput!
+) {
+  editSubscriptionItem(id: $id, input: $input) {
+    id
+  }
+}
+
+mutation UpdateSubscriptionItemPricesByProduct(
+  $productId: String!
+  $price: Int!
+  $startsAt: timestamp!
+) {
+  updateSubscriptionItemPricesByProductId(
+    productId: $productId
+    price: $price
+    startsAt: $startsAt
+  ) {
+    ids
+  }
+}
+
+query ListSubscriptionItemPauses(
+  $where: SubscriptionItemPauseBoolExp
+  $limit: Int
+  $offset: Int
+  $orderBy: [SubscriptionItemPauseOrderBy!]
+) {
+  subscriptionItemPause(
+    where: $where
+    limit: $limit
+    offset: $offset
+    orderBy: $orderBy
+  ) {
+    ...SubscriptionItemPauseFields
+  }
+}
+
+mutation InsertSubscriptionItemPause($object: SubscriptionItemPauseInsertInput!) {
+  insertSubscriptionItemPauseOne(object: $object) {
+    ...SubscriptionItemPauseFields
+  }
+}
+
+mutation DeleteSubscriptionItemPause($id: uuid!) {
+  deleteSubscriptionItemPauseByPk(id: $id) {
+    ...SubscriptionItemPauseFields
+  }
+}

@@ -1,0 +1,42 @@
+mutation VerifyPaywallToken($paymentToken: String!) {
+  verifyPaywallToken(paymentToken: $paymentToken) {
+    orderId
+    order {
+      ...OrderFields
+    }
+  }
+}
+
+query GetProjectPaymentMethods($paymentCurrency: String!) {
+  getProjectPaymentMethod(paymentCurrency: $paymentCurrency) {
+    paymentMethodId
+    projectId
+    projectProviderId
+    providerType
+    categoryId
+    currencies
+    kycRequired
+  }
+}
+
+query GetCustomPaywallMessage($paymentCurrency: String!) {
+  getCustomPaywallMessage(paymentCurrency: $paymentCurrency) {
+    type
+    message
+  }
+}
+
+query GetApplePaySession($input: GetApplePaySessionInput!) {
+  getApplePaySession(input: $input) {
+    session
+  }
+}
+
+query ExchangeCurrency($amount: Int!, $from: String!, $to: String!) {
+  exchangeCurrency(amount: $amount, from: $from, to: $to) {
+    amount
+    exchangeRate
+    exchangeMargin
+    exchangeRateWithoutMargin
+  }
+}
