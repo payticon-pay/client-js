@@ -6904,6 +6904,15 @@ export type CreateVoucherGroupMutationVariables = Exact<{
 
 export type CreateVoucherGroupMutation = { __typename?: 'mutation_root', insertVoucherGroupOne?: { __typename?: 'VoucherGroup', id: string, name: string, currency: CurrencyEnum, codeLength: number, startsAt: string, endsAt?: string | null, isActive?: boolean | null, balanceSum?: number | null, startBalanceSum?: number | null, createdAt: string, updatedAt: string } | null };
 
+export type WebhookOrderFragment = { __typename?: 'Order', id: string, status: OrderStatusEnum, projectId: string, createdAt: string, customerId: string, currentPrice?: number | null, paidAmount?: number | null, remainingAmount?: number | null, refundedAmount?: number | null, currency: CurrencyEnum, title?: string | null, webhookUrl: string, price: number, merchantId?: string | null, metadata: unknown, returnUrl?: string | null, customer?: { __typename?: 'Customer', id: string, email: string, firstName: string, lastName: string } | null, payments: Array<{ __typename?: 'Payment', id: string, status: PaymentStatusEnum, createdAt: string, amount: number, currency: string, rejectReason?: string | null, externalId?: string | null, paymentMethodId: string, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, ip?: string | null, userAgentHeader?: string | null, acceptHeader?: string | null, refunds: Array<{ __typename?: 'Refund', id: string, status: RefundStatusEnum, merchantId?: string | null, externalId?: string | null, amount: number, createdAt: string, reason?: string | null }> }> };
+
+export type WebhookOrderShapeQueryVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type WebhookOrderShapeQuery = { __typename?: 'query_root', orderByPk?: { __typename?: 'Order', id: string, status: OrderStatusEnum, projectId: string, createdAt: string, customerId: string, currentPrice?: number | null, paidAmount?: number | null, remainingAmount?: number | null, refundedAmount?: number | null, currency: CurrencyEnum, title?: string | null, webhookUrl: string, price: number, merchantId?: string | null, metadata: unknown, returnUrl?: string | null, customer?: { __typename?: 'Customer', id: string, email: string, firstName: string, lastName: string } | null, payments: Array<{ __typename?: 'Payment', id: string, status: PaymentStatusEnum, createdAt: string, amount: number, currency: string, rejectReason?: string | null, externalId?: string | null, paymentMethodId: string, redirectUrl?: string | null, error?: string | null, errorMessage?: string | null, ip?: string | null, userAgentHeader?: string | null, acceptHeader?: string | null, refunds: Array<{ __typename?: 'Refund', id: string, status: RefundStatusEnum, merchantId?: string | null, externalId?: string | null, amount: number, createdAt: string, reason?: string | null }> }> } | null };
+
 export const OrderFieldsFragmentDoc = new TypedDocumentString(`
     fragment OrderFields on Order {
   id
@@ -7265,6 +7274,57 @@ export const VoucherGroupFieldsFragmentDoc = new TypedDocumentString(`
   updatedAt
 }
     `, {"fragmentName":"VoucherGroupFields"}) as unknown as TypedDocumentString<VoucherGroupFieldsFragment, unknown>;
+export const WebhookOrderFragmentDoc = new TypedDocumentString(`
+    fragment WebhookOrder on Order {
+  id
+  status
+  projectId
+  createdAt
+  customerId
+  currentPrice
+  paidAmount
+  remainingAmount
+  refundedAmount
+  currency
+  title
+  webhookUrl
+  price
+  merchantId
+  metadata
+  returnUrl
+  customer {
+    id
+    email
+    firstName
+    lastName
+  }
+  payments {
+    id
+    status
+    createdAt
+    amount
+    currency
+    rejectReason
+    externalId
+    paymentMethodId
+    redirectUrl
+    error
+    errorMessage
+    ip
+    userAgentHeader
+    acceptHeader
+    refunds {
+      id
+      status
+      merchantId
+      externalId
+      amount
+      createdAt
+      reason
+    }
+  }
+}
+    `, {"fragmentName":"WebhookOrder"}) as unknown as TypedDocumentString<WebhookOrderFragment, unknown>;
 export const GetOrderDocument = new TypedDocumentString(`
     query GetOrder($id: uuid!) {
   orderByPk(id: $id) {
@@ -8709,3 +8769,58 @@ export const CreateVoucherGroupDocument = new TypedDocumentString(`
   createdAt
   updatedAt
 }`) as unknown as TypedDocumentString<CreateVoucherGroupMutation, CreateVoucherGroupMutationVariables>;
+export const WebhookOrderShapeDocument = new TypedDocumentString(`
+    query WebhookOrderShape($id: uuid!) {
+  orderByPk(id: $id) {
+    ...WebhookOrder
+  }
+}
+    fragment WebhookOrder on Order {
+  id
+  status
+  projectId
+  createdAt
+  customerId
+  currentPrice
+  paidAmount
+  remainingAmount
+  refundedAmount
+  currency
+  title
+  webhookUrl
+  price
+  merchantId
+  metadata
+  returnUrl
+  customer {
+    id
+    email
+    firstName
+    lastName
+  }
+  payments {
+    id
+    status
+    createdAt
+    amount
+    currency
+    rejectReason
+    externalId
+    paymentMethodId
+    redirectUrl
+    error
+    errorMessage
+    ip
+    userAgentHeader
+    acceptHeader
+    refunds {
+      id
+      status
+      merchantId
+      externalId
+      amount
+      createdAt
+      reason
+    }
+  }
+}`) as unknown as TypedDocumentString<WebhookOrderShapeQuery, WebhookOrderShapeQueryVariables>;

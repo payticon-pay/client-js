@@ -303,6 +303,91 @@ mints vouchers nobody asked for.
 | `paywall.applePaySession(input, options?)` | Apple's merchant-validation payload, typed `unknown` |
 | `exchange.currency(input, options?)` | Converts an amount with the project's margin applied |
 
+## Webhooks
+
+```ts
+import { createWebhookVerifier, eventKey } from "@paycadoo/client";
+
+const webhooks = createWebhookVerifier({ secret: process.env.PAY_WEBHOOK_SECRET! });
+
+app.post("/webhooks/pay", async (req, res) => {
+  const result = webhooks.parse(req.body); // string, Buffer or already-parsed object
+
+  if (!result.ok) {
+    // Answer 200 anyway: a 5xx makes hookticon redeliver a permanently broken
+    // payload for days.
+    logger.warn({ reason: result.reason }, "rejected webhook");
+    return res.status(200).end();
+  }
+
+  const claimed = await claimOnce(eventKey(result.event)); // one atomic write, your side
+  if (!claimed) {
+    logger.info({ key: eventKey(result.event) }, "duplicate delivery, skipped");
+    return res.status(200).end();
+  }
+
+  const order = await paycadoo.orders.get(result.event.order.id); // re-read; see below
+  await handlePaidOrder(order!);
+  res.status(200).end();
+});
+```
+
+| Export | Description |
+|---|---|
+| `parseWebhookEvent(body, { secret })` | Verifies and parses; returns a result, never throws |
+| `createWebhookVerifier({ secret })` | The same, with the secret closed over |
+| `verifyWebhookSignature(secret, type, order, signature)` | Constant-time signature check |
+| `computeWebhookSignature(secret, type, order)` | The signature the producer would send |
+| `eventKey(event)` | `"<order.id>:<order.status>"` — the only stable identity a delivery has |
+| `parseFailNotification(body)` | Parses hookticon's give-up notification |
+
+`WebhookOrder`, `WebhookPayment`, `WebhookRefund` and `WebhookCustomer` are generated from a fragment
+that mirrors the producer's own, so they cannot drift into describing fields nobody sends.
+
+### Every payment delivers at least twice
+
+One state transition produces **two identical deliveries**. Three Hasura triggers — on `payment`, on
+`order` and on `refund` — all call the same `sendOrderWebhook(orderId)`, which re-reads the order and
+signs the same five fields. The two bodies are byte-for-byte identical: there is no nonce, no
+timestamp and no delivery id, so **the duplicate cannot be detected from the payload**.
+
+This package therefore does not deduplicate. It gives you the key, and the gate is yours:
+
+1. verify the signature,
+2. **claim `eventKey(event)` with one atomic write** — a unique index, an upsert, a conditional
+   update — before anything with side effects,
+3. only then do the work.
+
+A `SELECT` followed by an `INSERT` is not a gate; two concurrent deliveries both pass it.
+
+### Re-read the order; do not trust the body
+
+The signature covers exactly five fields — `type`, `order.id`, `order.status`, `order.price` and
+`order.currency`. Everything else in the body, `paidAmount` and `payments[]` included, is unsigned.
+Take the id and the status from the event, then fetch the rest with `orders.get()`.
+
+### Failure notifications
+
+hookticon POSTs to `${webhookUrl}/fail` once it has given up. The notification is **unsigned** —
+observe it, never act on it. `webhook.body` is the hex of the original delivery, so the order it
+referred to can usually be recovered:
+
+```ts
+const result = parseFailNotification(req.body);
+if (result.ok) {
+  logger.error(
+    { orderId: result.notification.orderId, tries: result.notification.tries },
+    "paycadoo gave up delivering a webhook",
+  );
+}
+```
+
+For projects on the `NO_TIMEOUT` strategy there is exactly one delivery attempt, which makes this the
+only failure signal that exists.
+
+The webhook module does no I/O, does not know your API key, and imports nothing but generated types —
+it can be imported in a process that has no Paycadoo credentials at all.
+
 ## `raw()`
 
 Everything this package does not wrap is still reachable, with types:

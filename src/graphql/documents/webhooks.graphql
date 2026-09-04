@@ -1,0 +1,65 @@
+# A field-for-field mirror of the producer's own fragment
+# (`backend/src/data/db/graphql/webhooks.graphql`, fragment `OrderForWebhook`).
+#
+# The webhook payload type is derived from this rather than hand-written, so a
+# schema change shows up as a compile error here instead of as a wrong type in
+# a consumer. `src/webhooks/producerFragment.test.ts` pins the field list
+# against a copy of the producer's fragment: when the producer changes, that is
+# where it is meant to squeak.
+fragment WebhookOrder on Order {
+  id
+  status
+  projectId
+  createdAt
+  customerId
+  currentPrice
+  paidAmount
+  remainingAmount
+  refundedAmount
+  currency
+  title
+  webhookUrl
+  price
+  merchantId
+  metadata
+  returnUrl
+  customer {
+    id
+    email
+    firstName
+    lastName
+  }
+  payments {
+    id
+    status
+    createdAt
+    amount
+    currency
+    rejectReason
+    externalId
+    paymentMethodId
+    redirectUrl
+    error
+    errorMessage
+    ip
+    userAgentHeader
+    acceptHeader
+    refunds {
+      id
+      status
+      merchantId
+      externalId
+      amount
+      createdAt
+      reason
+    }
+  }
+}
+
+# Never sent to the server. It exists so codegen emits a type for the fragment
+# above; the webhook module imports that type and nothing else.
+query WebhookOrderShape($id: uuid!) {
+  orderByPk(id: $id) {
+    ...WebhookOrder
+  }
+}

@@ -97,4 +97,6 @@ export type {
   RetryOptions,
 } from "./types.js";
 
+export * from "./webhooks/index.js";
+
 export * from "./generated/enums.js";
