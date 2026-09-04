@@ -1,0 +1,66 @@
+{
+  "name": "@paycadoo/client",
+  "version": "0.0.0",
+  "description": "Official Node.js client for the Paycadoo API",
+  "license": "MIT",
+  "author": "Payticon",
+  "homepage": "https://github.com/payticon-pay/client-js#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/payticon-pay/client-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/payticon-pay/client-js/issues"
+  },
+  "keywords": [
+    "paycadoo",
+    "payments",
+    "sdk",
+    "graphql"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./schema": "./schema/paycadoo.graphql",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "schema"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "codegen": "graphql-codegen --config codegen/codegen.ts",
+    "schema:fetch": "node scripts/fetch-schema.mjs",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "5.0.3",
+    "@graphql-codegen/typed-document-node": "5.0.12",
+    "@graphql-codegen/typescript": "4.1.2",
+    "@graphql-codegen/typescript-operations": "4.4.0",
+    "@types/node": "22.10.2",
+    "graphql": "16.10.0",
+    "typescript": "5.7.2",
+    "vitest": "2.1.8"
+  }
+}

@@ -1,0 +1,6 @@
+# Smallest round-trip the schema allows: `__typename` needs no table permission,
+# so a failure here is always the endpoint, the network or the API key — never
+# a missing grant.
+query PaycadooPing {
+  __typename
+}

@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+
+      # Committed generated code that quietly describes an older schema is
+      # worse than none, because the types still look authoritative.
+      - name: Check generated code is up to date
+        run: |
+          npm run codegen
+          git diff --exit-code -- src/generated \
+            || { echo "::error::src/generated is stale — run 'npm run codegen' and commit"; exit 1; }
+
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npx --yes publint
+      # `./schema` is a .graphql file resolved by codegen tooling, not imported,
+      # so attw cannot resolve it as a module. `cjs-resolves-to-esm` is the
+      # require(esm) path, which every Node this package supports handles.
+      - run: npx --yes @arethetypeswrong/cli --pack --exclude-entrypoints schema --ignore-rules cjs-resolves-to-esm
+
+  publish_npm:
+    needs: build_and_test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # this IS the credential — trusted publishing over OIDC
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24" # bundles npm >= 11.5.1, which OIDC publishing needs
+          registry-url: https://registry.npmjs.org/
+      - run: npm --version
+      - run: npm ci
+      - run: npm run build
+      # No --provenance: trusted publishing attaches it on its own.
+      - run: npm publish --access public
+
+  github_release:
+    needs: [build_and_test, publish_npm]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
